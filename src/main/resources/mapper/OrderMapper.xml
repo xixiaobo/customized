@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swj.customized.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.swj.customized.bean.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="taskid" jdbcType="INTEGER" property="taskid" />
+    <result column="orderuserid" jdbcType="VARCHAR" property="orderuserid" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="createtime" jdbcType="VARCHAR" property="createtime" />
+    <result column="overtime" jdbcType="VARCHAR" property="overtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, taskid, orderuserid, status, createtime, overtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from c_order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectBySelective" parameterType="com.swj.customized.bean.Order" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from c_order
+    where 1=1
+      <if test="taskid != null">
+          and taskid = #{taskid,jdbcType=INTEGER}
+      </if>
+      <if test="orderuserid != null">
+          and orderuserid = #{orderuserid,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null">
+          and status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="createtime != null">
+          and createtime = #{createtime,jdbcType=VARCHAR}
+      </if>
+      <if test="overtime != null">
+          and overtime = #{overtime,jdbcType=VARCHAR}
+      </if>
+      <if test="id != null">
+          and id = #{id,jdbcType=INTEGER}
+      </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from c_order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+  <delete id="deleteByTaskId" parameterType="java.lang.Integer">
+    delete from c_order
+    where taskid = #{taskid,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.swj.customized.bean.Order">
+    insert into c_order (id, taskid, orderuserid, 
+      status, createtime, overtime
+      )
+    values (#{id,jdbcType=INTEGER}, #{taskid,jdbcType=INTEGER}, #{orderuserid,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR}, #{overtime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.swj.customized.bean.Order">
+    insert into c_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="taskid != null">
+        taskid,
+      </if>
+      <if test="orderuserid != null">
+        orderuserid,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="overtime != null">
+        overtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="taskid != null">
+        #{taskid,jdbcType=INTEGER},
+      </if>
+      <if test="orderuserid != null">
+        #{orderuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="overtime != null">
+        #{overtime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.swj.customized.bean.Order">
+    update c_order
+    <set>
+      <if test="taskid != null">
+        taskid = #{taskid,jdbcType=INTEGER},
+      </if>
+      <if test="orderuserid != null">
+        orderuserid = #{orderuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="overtime != null">
+        overtime = #{overtime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.swj.customized.bean.Order">
+    update c_order
+    set taskid = #{taskid,jdbcType=INTEGER},
+      orderuserid = #{orderuserid,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=VARCHAR},
+      overtime = #{overtime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

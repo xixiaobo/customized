@@ -1,0 +1,83 @@
+1、登录:管理员登录
+		需求者登录
+		供应者登录
+
+2、个人信息修改
+3、个人密码修改
+4、管理员用户信息增删改查
+5、管理员对用户密码重置
+6、用户注册
+
+
+7、分类管理  
+
+8、产品管理（分类下）
+	图片上传
+
+9、任务管理
+	
+
+11、消息管理：产品下留言（留言人可以删除，管理员可以删除），一个产品下可以多条留言
+
+
+
+
+用户表
+c_user
+	id			varchar		用户id
+	username	varchar		用户登录名
+	password    varchar		密码
+	realname	varchar		用户真实姓名
+	phone		varchar		手机号
+	email		varchar		邮箱
+	role		varchar		角色
+	createtime	varchar		用户创建时间
+
+分类表
+c_classify
+	id			int			分类id
+	classname	varchar		分类名称
+	classnum	varchar		分类下产品数量
+	createtime	varchar		分类创建时间
+产品表
+c_product
+	id			int			产品id
+	productname	varchar		产品名称
+	classid		int			分类id
+	userid		varchar		用户id
+	content		varchar		产品介绍
+	imageids	varchar		产品图片id数组（逗号分隔）
+	createtime	varchar		产品创建时间
+	
+产品图片表
+c_image
+	id			int			图片id
+	productid	int			产品id
+	imagebase64 longtext	图片base64数据
+	createtime	varchar		图片创建时间
+
+任务表
+c_task
+	id			int			任务id
+	title		varchar		任务标题
+	content		varchar		任务内容
+	userid		varchar		用户id
+	status		int			任务状态
+	createtime	varchar		任务创建时间
+
+订单表
+c_order
+	id			int			订单id
+	taskid		int			任务id
+	orderuserid	varchar		接单用户id
+	status		int			订单状态
+	createtime	varchar		订单创建时间
+	overtime	varchar		订单完成时间
+	
+留言表
+c_message
+	id			int			留言id
+	productid	int			产品id
+	userid		varchar		留言用户id
+	content		varchar		留言内容
+	createtime	varchar		留言创建时间

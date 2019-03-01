@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swj.customized.mapper.ImageMapper">
+  <resultMap id="BaseResultMap" type="com.swj.customized.bean.Image">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="productid" jdbcType="INTEGER" property="productid" />
+    <result column="createtime" jdbcType="VARCHAR" property="createtime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.swj.customized.bean.Image">
+    <result column="imagebase64" jdbcType="LONGVARCHAR" property="imagebase64" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, productid, createtime
+  </sql>
+  <sql id="Blob_Column_List">
+    imagebase64
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from c_image
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectBySelective" parameterType="com.swj.customized.bean.Image" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from c_image
+    where 1=1
+    <if test="productid != null">
+      and productid = #{productid,jdbcType=INTEGER}
+    </if>
+    <if test="createtime != null">
+      and createtime = #{createtime,jdbcType=VARCHAR}
+    </if>
+    <if test="imagebase64 != null">
+      and imagebase64 = #{imagebase64,jdbcType=LONGVARCHAR}
+    </if>
+    <if test="id != null">
+      and id = #{id,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from c_image
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"  parameterType="com.swj.customized.bean.Image">
+    insert into c_image (id, productid, createtime, 
+      imagebase64)
+    values (#{id,jdbcType=INTEGER}, #{productid,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR}, 
+      #{imagebase64,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id"  parameterType="com.swj.customized.bean.Image">
+    insert into c_image
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productid != null">
+        productid,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="imagebase64 != null">
+        imagebase64,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productid != null">
+        #{productid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="imagebase64 != null">
+        #{imagebase64,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.swj.customized.bean.Image">
+    update c_image
+    <set>
+      <if test="productid != null">
+        productid = #{productid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="imagebase64 != null">
+        imagebase64 = #{imagebase64,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.swj.customized.bean.Image">
+    update c_image
+    set productid = #{productid,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=VARCHAR},
+      imagebase64 = #{imagebase64,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.swj.customized.bean.Image">
+    update c_image
+    set productid = #{productid,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

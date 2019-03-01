@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.swj.customized.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.swj.customized.bean.Product">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="productname" jdbcType="VARCHAR" property="productname" />
+    <result column="classid" jdbcType="INTEGER" property="classid" />
+    <result column="userid" jdbcType="VARCHAR" property="userid" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="imageids" jdbcType="VARCHAR" property="imageids" />
+    <result column="createtime" jdbcType="VARCHAR" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, productname, classid, userid, content, imageids, createtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from c_product
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectBySelective" parameterType="com.swj.customized.bean.Product" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from c_product
+    where 1=1
+    <if test="productname != null">
+      and productname like #{productname,jdbcType=VARCHAR}
+    </if>
+    <if test="classid != null">
+      and classid = #{classid,jdbcType=INTEGER}
+    </if>
+    <if test="userid != null">
+      and userid = #{userid,jdbcType=VARCHAR}
+    </if>
+    <if test="content != null">
+      and content = #{content,jdbcType=VARCHAR}
+    </if>
+    <if test="imageids != null">
+      and imageids = #{imageids,jdbcType=VARCHAR}
+    </if>
+    <if test="createtime != null">
+      and createtime = #{createtime,jdbcType=VARCHAR}
+    </if>
+    <if test="id != null">
+      and id = #{id,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from c_product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.swj.customized.bean.Product">
+    insert into c_product (id, productname, classid, 
+      userid, content, imageids, 
+      createtime)
+    values (#{id,jdbcType=INTEGER}, #{productname,jdbcType=VARCHAR}, #{classid,jdbcType=INTEGER}, 
+      #{userid,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{imageids,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.swj.customized.bean.Product">
+    insert into c_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productname != null">
+        productname,
+      </if>
+      <if test="classid != null">
+        classid,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="imageids != null">
+        imageids,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productname != null">
+        #{productname,jdbcType=VARCHAR},
+      </if>
+      <if test="classid != null">
+        #{classid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="imageids != null">
+        #{imageids,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.swj.customized.bean.Product">
+    update c_product
+    <set>
+      <if test="productname != null">
+        productname = #{productname,jdbcType=VARCHAR},
+      </if>
+      <if test="classid != null">
+        classid = #{classid,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="imageids != null">
+        imageids = #{imageids,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.swj.customized.bean.Product">
+    update c_product
+    set productname = #{productname,jdbcType=VARCHAR},
+      classid = #{classid,jdbcType=INTEGER},
+      userid = #{userid,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      imageids = #{imageids,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
