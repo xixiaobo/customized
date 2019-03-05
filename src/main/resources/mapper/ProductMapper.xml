@@ -1,63 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.swj.customized.mapper.ProductMapper">
-  <resultMap id="BaseResultMap" type="com.swj.customized.bean.Product">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="productname" jdbcType="VARCHAR" property="productname" />
-    <result column="classid" jdbcType="INTEGER" property="classid" />
-    <result column="userid" jdbcType="VARCHAR" property="userid" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="imageids" jdbcType="VARCHAR" property="imageids" />
-    <result column="createtime" jdbcType="VARCHAR" property="createtime" />
-  </resultMap>
   <sql id="Base_Column_List">
-    id, productname, classid, userid, content, imageids, createtime
+        SELECT
+          p.id,
+          p.productname,
+          p.classid,
+          p.userid,
+          c.classname,
+          u.username,
+          p.content,
+          p.defaultImage,
+          p.productscore,
+          p.productscorenum,
+          p.createtime
+      FROM
+          c_product p
+          LEFT JOIN c_classify c ON c.id = p.classid
+          LEFT JOIN c_user u ON u.id = p.userid
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from c_product
-    where id = #{id,jdbcType=INTEGER}
+  <select id="selectBySixNew" resultType="com.swj.customized.bean.Product">
+    <include refid="Base_Column_List"/>
+   order by p.createtime desc limit 0,6
   </select>
 
-  <select id="selectBySelective" parameterType="com.swj.customized.bean.Product" resultMap="BaseResultMap">
-    select
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="com.swj.customized.bean.Product">
     <include refid="Base_Column_List" />
-    from c_product
+    where p.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectBySelective" parameterType="com.swj.customized.bean.Product" resultType="com.swj.customized.bean.Product">
+    <include refid="Base_Column_List" />
     where 1=1
-    <if test="productname != null">
-      and productname like #{productname,jdbcType=VARCHAR}
+    <if test="productname != null and productname != ''">
+      and p.productname like  concat('%',#{productname,jdbcType=VARCHAR},'%')
     </if>
     <if test="classid != null">
-      and classid = #{classid,jdbcType=INTEGER}
+      and p.classid = #{classid,jdbcType=INTEGER}
     </if>
-    <if test="userid != null">
-      and userid = #{userid,jdbcType=VARCHAR}
+    <if test="userid != null and userid != ''">
+      and p.userid = #{userid,jdbcType=VARCHAR}
     </if>
-    <if test="content != null">
-      and content = #{content,jdbcType=VARCHAR}
+    <if test="content != null and content != ''">
+      and p.content = #{content,jdbcType=VARCHAR}
     </if>
-    <if test="imageids != null">
-      and imageids = #{imageids,jdbcType=VARCHAR}
+    <if test="defaultImage != null and defaultImage != ''">
+      and p.defaultImage = #{defaultImage,jdbcType=VARCHAR}
     </if>
-    <if test="createtime != null">
-      and createtime = #{createtime,jdbcType=VARCHAR}
+    <if test="createtime != null and createtime != ''">
+      and p.createtime = #{createtime,jdbcType=VARCHAR}
     </if>
     <if test="id != null">
-      and id = #{id,jdbcType=INTEGER}
+      and p.id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="sortfield != null and sortfield != ''">
+      order by p.${sortfield}
+      <if test="sortingdirection != null and sortingdirection != ''">
+        ${sortingdirection}
+      </if>
     </if>
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from c_product
-    where id = #{id,jdbcType=INTEGER}
+  <delete id="deleteByPrimaryKey" parameterType="java.util.List">
+    DELETE p,
+i,
+m,
+s
+FROM
+	c_product p
+	LEFT JOIN c_image i ON i.productid = p.id
+    LEFT JOIN c_message m ON m.productid = p.id
+    LEFT JOIN c_product_score s ON s.product_id = p.id
+WHERE
+	p.id on
+    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
   </delete>
   <insert id="insert"  useGeneratedKeys="true" keyProperty="id" parameterType="com.swj.customized.bean.Product">
     insert into c_product (id, productname, classid, 
-      userid, content, imageids, 
+      userid, content,productscore, productscorenum,defaultImage,
       createtime)
     values (#{id,jdbcType=INTEGER}, #{productname,jdbcType=VARCHAR}, #{classid,jdbcType=INTEGER}, 
-      #{userid,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{imageids,jdbcType=VARCHAR}, 
+      #{userid,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{productscore,jdbcType=DOUBLE},#{productscorenum,jdbcType=INTEGER},#{defaultImage,jdbcType=VARCHAR},
       #{createtime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.swj.customized.bean.Product">
@@ -78,8 +103,14 @@
       <if test="content != null">
         content,
       </if>
-      <if test="imageids != null">
-        imageids,
+      <if test="defaultImage != null">
+        defaultImage,
+      </if>
+      <if test="productscore != null">
+        productscore,
+      </if>
+      <if test="productscorenum != null">
+        productscorenum,
       </if>
       <if test="createtime != null">
         createtime,
@@ -101,8 +132,14 @@
       <if test="content != null">
         #{content,jdbcType=VARCHAR},
       </if>
-      <if test="imageids != null">
-        #{imageids,jdbcType=VARCHAR},
+      <if test="defaultImage != null">
+        #{defaultImage,jdbcType=VARCHAR},
+      </if>
+      <if test="productscore != null">
+        #{productscore,jdbcType=DOUBLE},
+      </if>
+      <if test="productscorenum != null">
+        #{productscorenum,jdbcType=INTEGER},
       </if>
       <if test="createtime != null">
         #{createtime,jdbcType=VARCHAR},
@@ -124,8 +161,14 @@
       <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
       </if>
-      <if test="imageids != null">
-        imageids = #{imageids,jdbcType=VARCHAR},
+      <if test="defaultImage != null">
+        defaultImage = #{defaultImage,jdbcType=VARCHAR},
+      </if>
+      <if test="productscore != null">
+        productscore = #{productscore,jdbcType=DOUBLE},
+      </if>
+      <if test="productscorenum != null">
+        productscorenum = #{productscorenum,jdbcType=INTEGER},
       </if>
       <if test="createtime != null">
         createtime = #{createtime,jdbcType=VARCHAR},
@@ -139,8 +182,11 @@
       classid = #{classid,jdbcType=INTEGER},
       userid = #{userid,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},
-      imageids = #{imageids,jdbcType=VARCHAR},
+      defaultImage = #{defaultImage,jdbcType=VARCHAR},
+      productscore = #{productscore,jdbcType=DOUBLE},
+      productscorenum = #{productscorenum,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
 </mapper>

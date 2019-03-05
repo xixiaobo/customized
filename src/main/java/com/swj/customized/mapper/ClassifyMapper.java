@@ -3,6 +3,7 @@ package com.swj.customized.mapper;
 import com.swj.customized.bean.Classify;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -23,9 +24,6 @@ public interface ClassifyMapper {
 
     int updateByPrimaryKey(Classify record);
 
-    @Update("update c_classify set classnum=classnum+1 where id = #{id}")
-    int updateClassnumUp(@Param("id") Integer id);
-
-    @Update("update c_classify set classnum=classnum-1 where id = #{id}")
-    int updateClassnumDown(@Param("id") Integer id);
+    @Select("select count(id) from c_product where classid=#{id}")
+    int selectNumByPrimaryKey(@Param("id")Integer id);
 }

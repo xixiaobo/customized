@@ -91,11 +91,11 @@ public class ImageController {
         if (c == null) {
             re.put("code", "0");
             re.put("Image", "图片获取失败或图片为空！");
-            re.put("user", new JSONObject());
+            re.put("result", new JSONObject());
         } else {
             re.put("code", "1");
             re.put("Image", "图片信息查询成功！");
-            re.put("result", JSONTool.ObjectToJSONObject(c));
+            re.put("result", c);
         }
         return re;
     }

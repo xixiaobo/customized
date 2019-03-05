@@ -113,11 +113,11 @@ public class OrderManageController {
         if (c == null) {
             re.put("code", "0");
             re.put("message", "订单获取失败或订单为空！");
-            re.put("user", new JSONObject());
+            re.put("result", new JSONObject());
         } else {
             re.put("code", "1");
             re.put("message", "订单信息查询成功！");
-            re.put("result", JSONTool.ObjectToJSONObject(c));
+            re.put("result", c);
         }
         return re;
     }

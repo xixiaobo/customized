@@ -91,11 +91,11 @@ public class MessageController {
         if (c == null) {
             re.put("code", "0");
             re.put("message", "留言获取失败或留言为空！");
-            re.put("user", new JSONObject());
+            re.put("result", new JSONObject());
         } else {
             re.put("code", "1");
             re.put("message", "留言信息查询成功！");
-            re.put("result", JSONTool.ObjectToJSONObject(c));
+            re.put("result", c);
         }
         return re;
     }

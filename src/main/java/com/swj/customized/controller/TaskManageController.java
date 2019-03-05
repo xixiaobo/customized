@@ -113,11 +113,11 @@ public class TaskManageController {
         if (c == null) {
             re.put("code", "0");
             re.put("message", "任务获取失败或任务为空！");
-            re.put("user", new JSONObject());
+            re.put("result", new JSONObject());
         } else {
             re.put("code", "1");
             re.put("message", "任务信息查询成功！");
-            re.put("result", JSONTool.ObjectToJSONObject(c));
+            re.put("result", c);
         }
         return re;
     }

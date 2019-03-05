@@ -120,11 +120,11 @@ public class UsersManageController {
         if (u == null) {
             re.put("code", "0");
             re.put("message", "用户获取失败或用户为空！");
-            re.put("user", new JSONObject());
+            re.put("result", new JSONObject());
         } else {
             re.put("code", "1");
             re.put("message", "用户信息查询成功！");
-            re.put("result", JSONTool.ObjectToJSONObject(u));
+            re.put("result", u);
         }
         return re;
     }

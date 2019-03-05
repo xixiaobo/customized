@@ -4,11 +4,10 @@
   <resultMap id="BaseResultMap" type="com.swj.customized.bean.Classify">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="classname" jdbcType="VARCHAR" property="classname" />
-    <result column="classnum" jdbcType="INTEGER" property="classnum" />
     <result column="createtime" jdbcType="VARCHAR" property="createtime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, classname, classnum, createtime
+    id, classname, createtime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,9 +25,6 @@
     <if test="classname != null">
       and classname = #{classname,jdbcType=VARCHAR}
     </if>
-    <if test="classnum != null">
-      and classnum = #{classnum,jdbcType=INTEGER}
-    </if>
     <if test="createtime != null">
       and createtime = #{createtime,jdbcType=VARCHAR}
     </if>
@@ -42,9 +38,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.swj.customized.bean.Classify">
-    insert into c_classify (id, classname, classnum, 
+    insert into c_classify (id, classname,
       createtime)
-    values (#{id,jdbcType=INTEGER}, #{classname,jdbcType=VARCHAR}, #{classnum,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{classname,jdbcType=VARCHAR},
       #{createtime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.swj.customized.bean.Classify">
@@ -55,9 +51,6 @@
       </if>
       <if test="classname != null">
         classname,
-      </if>
-      <if test="classnum != null">
-        classnum,
       </if>
       <if test="createtime != null">
         createtime,
@@ -70,9 +63,6 @@
       <if test="classname != null">
         #{classname,jdbcType=VARCHAR},
       </if>
-      <if test="classnum != null">
-        #{classnum,jdbcType=INTEGER},
-      </if>
       <if test="createtime != null">
         #{createtime,jdbcType=VARCHAR},
       </if>
@@ -84,9 +74,6 @@
       <if test="classname != null">
         classname = #{classname,jdbcType=VARCHAR},
       </if>
-      <if test="classnum != null">
-        classnum = #{classnum,jdbcType=INTEGER},
-      </if>
       <if test="createtime != null">
         createtime = #{createtime,jdbcType=VARCHAR},
       </if>
@@ -96,7 +83,6 @@
   <update id="updateByPrimaryKey" parameterType="com.swj.customized.bean.Classify">
     update c_classify
     set classname = #{classname,jdbcType=VARCHAR},
-      classnum = #{classnum,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

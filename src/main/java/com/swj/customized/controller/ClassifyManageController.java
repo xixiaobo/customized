@@ -62,7 +62,7 @@ public class ClassifyManageController {
 
     @RequestMapping(value = "updaClassify", method = RequestMethod.PUT)
     @Transactional
-    @ApiOperation(value = "修改分类", notes = "修改分类")
+    @ApiOperation(value = "修改分类名称", notes = "修改分类名称")
     public JSONObject updataClassify(@RequestBody Classify classify) {
         JSONObject re = new JSONObject();
         try {
@@ -95,8 +95,8 @@ public class ClassifyManageController {
     public JSONObject deleteClassify(@PathVariable("classifyid") int classifyid) {
         JSONObject re = new JSONObject();
         try {
-            Classify classify=classifyMapper.selectByPrimaryKey(classifyid);
-            if (classify.getClassnum()>0){
+            int num=classifyMapper.selectNumByPrimaryKey(classifyid);
+            if (num>0){
                 re.put("code", "0");
                 re.put("message", "删除分类失败，分类下有产品");
                 return re;
@@ -117,15 +117,28 @@ public class ClassifyManageController {
     public JSONObject getClassifyById(@RequestParam int classifyid) {
         JSONObject re = new JSONObject();
         Classify c = classifyMapper.selectByPrimaryKey(classifyid);
+        int num=classifyMapper.selectNumByPrimaryKey(classifyid);
+        c.setClassnum(num);
         if (c == null) {
             re.put("code", "0");
             re.put("message", "分类获取失败或分类为空！");
-            re.put("user", new JSONObject());
+            re.put("result", new JSONObject());
         } else {
             re.put("code", "1");
             re.put("message", "分类信息查询成功！");
-            re.put("result", JSONTool.ObjectToJSONObject(c));
+            re.put("result", c);
         }
+        return re;
+    }
+
+    @RequestMapping(value = "getProductNumById", method = RequestMethod.GET)
+    @ApiOperation(value = "获取指定分类下的产品数量", notes = "根据分类ID获取指定分类下的产品数量")
+    public JSONObject getProductNumById(@RequestParam int classifyid) {
+        JSONObject re = new JSONObject();
+        int num=classifyMapper.selectNumByPrimaryKey(classifyid);
+        re.put("code", "1");
+        re.put("message", "获取指定分类下的产品数量成功！");
+        re.put("result", num);
         return re;
     }
 
@@ -158,32 +171,17 @@ public class ClassifyManageController {
 
     @ApiOperation(value = "获取所有分类", notes = "获取所有分类或分页获取所有分类")
     @RequestMapping(value = "getAllClassify", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "ispage", value = "是否使用分页", required = true, dataType = "boolean", paramType = "query"),
-            @ApiImplicitParam(name = "pageNum", value = "查询页数", required = false, dataType = "int", paramType = "query"),
-            @ApiImplicitParam(name = "pageSize", value = "每页条数", required = false, dataType = "int", paramType = "query"),
-    })
-    public JSONObject getAllClassify(@RequestParam(name = "ispage") boolean ispage,
-                               @RequestParam(name = "pageNum", required = false) Integer pageNum,
-                               @RequestParam(name = "pageSize", required = false) Integer pageSize)
+      public JSONObject getAllClassify()
     {
-        if (ispage) {
-            PageHelper.startPage(pageNum, pageSize);
-        }
         JSONObject k = new JSONObject();
-
         try {
             List<Classify> cs = classifyMapper.selectBySelective(null);
             k.put("code", 1);
-            k.put("message", "查询成功");
+            k.put("message", "获取所有分类成功");
             k.put("result", cs);
-            if (ispage) {
-                PageInfo<Classify> pageInfo = new PageInfo<Classify>(cs);
-                k.put("result", pageInfo);
-            }
         }catch (Exception e){
             k.put("code", 0);
-            k.put("message", "查询失败");
+            k.put("message", "获取所有分类失败");
             k.put("result", new JSONObject());
             k.put("Exception",e);
         }

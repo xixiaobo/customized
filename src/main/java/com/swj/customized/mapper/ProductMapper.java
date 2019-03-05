@@ -1,13 +1,13 @@
 package com.swj.customized.mapper;
 
 import com.swj.customized.bean.Product;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
 public interface ProductMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(@Param("ids") List<Integer> ids);
 
     int insert(Product record);
 
@@ -17,7 +17,17 @@ public interface ProductMapper {
 
     List<Product> selectBySelective(Product record);
 
+    List<Product> selectBySixNew();
+
     int updateByPrimaryKeySelective(Product record);
 
     int updateByPrimaryKey(Product record);
+
+    @Insert("INSERT INTO `c_product_score`(`product_id`, `user_id`, `score`) " +
+            "VALUES (#{product_id},#{user_id},#{score});")
+    int addProductscoreByUser(@Param("product_id")Integer product_id,@Param("user_id")String user_id,@Param("score")double score);
+
+    @Select("SELECT COUNT(user_id) num from c_product_score where product_id=#{product_id} and user_id= #{user_id}")
+    int selectishavauserByscore(@Param("product_id")Integer product_id,@Param("user_id")String user_id);
+
 }

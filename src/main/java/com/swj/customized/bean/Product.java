@@ -15,17 +15,31 @@ public class Product {
 
     @ApiModelProperty(value="分类id",name="classid")
     private Integer classid;
+    @ApiModelProperty(value="分类名称",name="classid")
+    private String classname;
 
     @ApiModelProperty(value="用户id",name="userid")
     private String userid;
+    @ApiModelProperty(value="用户名称",name="userid")
+    private String username;
 
     @ApiModelProperty(value="产品介绍",name="content")
     private String content;
 
-    @ApiModelProperty(value="产品图片id数组（逗号分隔）",name="imageids")
-    private String imageids;
+    @ApiModelProperty(value="产品默认图片",name="imageids")
+    private String defaultImage;
+
+    @ApiModelProperty(value="产品评分",name="productscore")
+    private double productscore;
+
+    @ApiModelProperty(value="产品评分人数",name="productscore")
+    private int productscorenum;
 
     @ApiModelProperty(value="产品创建时间",name="createtime")
     private String createtime;
+
+    private String sortfield;
+
+    private String sortingdirection;
 
 }
