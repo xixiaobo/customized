@@ -81,7 +81,7 @@ WHERE
     insert into c_product (id, productname, classid, 
       userid, content,productscore, productscorenum,defaultImage,
       createtime)
-    values (#{id,jdbcType=INTEGER}, #{productname,jdbcType=VARCHAR}, #{classid,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=VARCHAR}, #{productname,jdbcType=VARCHAR}, #{classid,jdbcType=INTEGER},
       #{userid,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{productscore,jdbcType=DOUBLE},#{productscorenum,jdbcType=INTEGER},#{defaultImage,jdbcType=VARCHAR},
       #{createtime,jdbcType=VARCHAR})
   </insert>
@@ -118,7 +118,7 @@ WHERE
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=VARCHAR},
       </if>
       <if test="productname != null">
         #{productname,jdbcType=VARCHAR},
@@ -174,7 +174,7 @@ WHERE
         createtime = #{createtime,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.swj.customized.bean.Product">
     update c_product
@@ -186,7 +186,7 @@ WHERE
       productscore = #{productscore,jdbcType=DOUBLE},
       productscorenum = #{productscorenum,jdbcType=INTEGER},
       createtime = #{createtime,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
 
 </mapper>

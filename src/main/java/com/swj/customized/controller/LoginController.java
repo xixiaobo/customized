@@ -47,26 +47,31 @@ public class LoginController {
         JSONObject result = new JSONObject();
         String username = jsonObject.getString("username");
         String password = jsonObject.getString("password");
-        Users data=new Users();
-        data.setUsername(username);
-        List<Users> us = usersMapper.selectUserBySelective(data);
-
-        if(us==null||us.size()==0){
-            result.put("code", "0");
-            result.put("message", "用户名或密码错误");
-        }else {
-            if(new BCryptPasswordEncoder().matches(password,us.get(0).getPassword())){
-                response.addCookie(new Cookie("userid",us.get(0).getId()));
-                response.addCookie(new Cookie("role",us.get(0).getRole()));
-                result.put("code", "1");
-                result.put("message", "登录成功");
-                result.put("result", JSONTool.ObjectToJSONObject(us.get(0)));
-            }else {
+        try {
+            Users data=new Users();
+            data.setUsername(username);
+            List<Users> us = usersMapper.selectUserBySelective(data);
+            if(us==null||us.size()==0){
                 result.put("code", "0");
                 result.put("message", "用户名或密码错误");
+            }else {
+                if(new BCryptPasswordEncoder().matches(password,us.get(0).getPassword())){
+                    response.addCookie(new Cookie("userid",us.get(0).getId()));
+                    response.addCookie(new Cookie("role",us.get(0).getRole()));
+                    result.put("code", "1");
+                    result.put("message", "登录成功");
+                    result.put("result", JSONTool.ObjectToJSONObject(us.get(0)));
+                }else {
+                    result.put("code", "0");
+                    result.put("message", "用户名或密码错误");
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
+            result.put("code", "0");
+            result.put("message", "服务器出错登录失败");
+            result.put("Exception",e);
         }
-
         return result;
     }
 

@@ -11,7 +11,7 @@ public class Image {
     private Integer id;
 
     @ApiModelProperty(value="产品id",name="productid")
-    private Integer productid;
+    private String productid;
 
     @ApiModelProperty(value="图片base64数据",name="createtime")
     private String createtime;

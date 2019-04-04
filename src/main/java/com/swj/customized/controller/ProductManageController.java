@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by xxb on 2018/10/22.
@@ -37,6 +38,18 @@ public class ProductManageController {
 
     @Resource
     private ProductMapper productMapper;
+    @RequestMapping(value = "getProductID", method = RequestMethod.GET)
+    @ApiOperation(value = "获取产品ID", notes = "获取产品ID")
+    @Transactional
+    public JSONObject getProductID() {
+        JSONObject re = new JSONObject();
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        re.put("code", "1");
+        re.put("message", "获取产品ID成功");
+        re.put("result", uuid);
+        return re;
+    }
+
 
 
     @RequestMapping(value = "addProduct", method = RequestMethod.POST)
@@ -44,19 +57,18 @@ public class ProductManageController {
     @Transactional
     public JSONObject addProduct(@RequestBody Product product) {
         JSONObject re = new JSONObject();
-        product.setId(null);
         try {
             Product product1 = new Product();
             product1.setProductname(product.getProductname());
             product1.setClassid(product.getClassid());
-            product1.setProductscore(0);
-            product1.setProductscorenum(0);
-            product1.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
             List<Product> products = productMapper.selectBySelective(product1);
             if (products.size() > 0) {
                 re.put("code", "0");
                 re.put("message", "添加产品失败，产品已存在");
             } else {
+                product.setProductscore(0);
+                product.setProductscorenum(0);
+                product.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
                 productMapper.insertSelective(product);
                 re.put("code", "1");
                 re.put("message", "添加产品成功");
@@ -72,7 +84,7 @@ public class ProductManageController {
 
     @RequestMapping(value = "JudgingWhetherUsersScoreOrNot", method = RequestMethod.GET)
     @ApiOperation(value = "判断用户是否评分", notes = "判断用户是否评分")
-    public JSONObject JudgingWhetherUsersScoreOrNot(@RequestParam("id") int id,@RequestParam("userid") String userid) {
+    public JSONObject JudgingWhetherUsersScoreOrNot(@RequestParam("id") String id,@RequestParam("userid") String userid) {
         JSONObject re = new JSONObject();
         try {
             int num=productMapper.selectishavauserByscore(id,userid);
@@ -94,7 +106,7 @@ public class ProductManageController {
 
     @RequestMapping(value = "updataProductscore", method = RequestMethod.GET)
     @ApiOperation(value = "修改产品评分", notes = "修改产品")
-    public JSONObject updataProductscore(@RequestParam("id") int id, @RequestParam("score") double score, @RequestParam("userid") String userid) {
+    public JSONObject updataProductscore(@RequestParam("id") String id, @RequestParam("score") double score, @RequestParam("userid") String userid) {
         JSONObject re = new JSONObject();
         try {
             Product product = productMapper.selectByPrimaryKey(id);
@@ -166,9 +178,9 @@ public class ProductManageController {
     public JSONObject deleteProduct(@RequestBody JSONArray productid) {
         JSONObject re = new JSONObject();
         try {
-            List<Integer> ids = new ArrayList<>();
+            List<String> ids = new ArrayList<>();
             for (int i = 0; i < productid.size(); i++) {
-                ids.add(productid.getInteger(i));
+                ids.add(productid.getString(i));
             }
             productMapper.deleteByPrimaryKey(ids);
             re.put("code", "1");
@@ -183,7 +195,7 @@ public class ProductManageController {
 
     @RequestMapping(value = "getProductById", method = RequestMethod.GET)
     @ApiOperation(value = "获取指定产品基本信息", notes = "根据产品ID获取指定产品基本信息")
-    public JSONObject getProductById(@RequestParam int productid) {
+    public JSONObject getProductById(@RequestParam String productid) {
         JSONObject re = new JSONObject();
         Product c = productMapper.selectByPrimaryKey(productid);
         if (c == null) {

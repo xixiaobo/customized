@@ -3,6 +3,7 @@ package com.swj.customized.mapper;
 import com.swj.customized.bean.Image;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface ImageMapper {
     int updateByPrimaryKeyWithBLOBs(Image record);
 
     int updateByPrimaryKey(Image record);
+
+    int insertListe(@Param("images") List<Image> images);
 }

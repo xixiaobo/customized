@@ -11,10 +11,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +39,30 @@ public class ImageController {
     public JSONObject addImage(@RequestBody Image image){
         JSONObject re = new JSONObject();
         try {
+            image.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
             imageMapper.insertSelective(image);
+            re.put("code", "1");
+            re.put("Image", "添加图片成功");
+        }catch (Exception e){
+            re.put("code", "0");
+            re.put("Image", "添加图片失败");
+            re.put("Exception",e);
+        }
+        return re;
+    }
+
+    @RequestMapping(value = "addImages/{productid}", method = RequestMethod.POST)
+    @ApiOperation(value = "添加图片", notes = "添加新图片")
+    @Transactional
+    public JSONObject addImage(@PathVariable("productid")String productid, @RequestBody List<Image> images){
+        JSONObject re = new JSONObject();
+        try {
+            List<Image> newimages=new ArrayList<>();
+            for (Image image:images) {
+                image.setProductid(productid);
+                image.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
+            }
+            imageMapper.insertListe(images);
             re.put("code", "1");
             re.put("Image", "添加图片成功");
         }catch (Exception e){

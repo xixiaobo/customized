@@ -8,7 +8,7 @@ import lombok.Data;
 @ApiModel(value = "产品实体类",description = "产品实体类")
 public class Product {
     @ApiModelProperty(value="产品id",name="id")
-    private Integer id;
+    private String id;
 
     @ApiModelProperty(value="产品名称",name="productname")
     private String productname;

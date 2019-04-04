@@ -5,6 +5,7 @@
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="userimg" jdbcType="VARCHAR" property="userimg" />
     <result column="realname" jdbcType="VARCHAR" property="realname" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="email" jdbcType="VARCHAR" property="email" />
@@ -12,7 +13,7 @@
     <result column="createtime" jdbcType="VARCHAR" property="createtime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, username, password, realname, phone, email, role, createtime
+    id, username, password, userimg,realname, phone, email, role, createtime
   </sql>
 
 
@@ -58,10 +59,10 @@
   </delete>
 
   <insert id="insert" parameterType="com.swj.customized.bean.Users">
-    insert into c_user (id, username, password, 
+    insert into c_user (id, username, password, userimg,
       realname, phone, email, 
       role, createtime)
-    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{userimg,jdbcType=VARCHAR},
       #{realname,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{role,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR})
   </insert>
@@ -77,6 +78,9 @@
       </if>
       <if test="password != null">
         password,
+      </if>
+      <if test="userimg != null">
+        userimg,
       </if>
       <if test="realname != null">
         realname,
@@ -104,6 +108,9 @@
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
+      <if test="userimg != null">
+        #{userimg,jdbcType=VARCHAR},
+      </if>
       <if test="realname != null">
         #{realname,jdbcType=VARCHAR},
       </if>
@@ -130,6 +137,9 @@
       <if test="password != null">
         password = #{password,jdbcType=VARCHAR},
       </if>
+      <if test="userimg != null">
+        userimg = #{userimg,jdbcType=VARCHAR},
+      </if>
       <if test="realname != null">
         realname = #{realname,jdbcType=VARCHAR},
       </if>
@@ -151,7 +161,7 @@
   <update id="updateByPrimaryKey" parameterType="com.swj.customized.bean.Users">
     update c_user
     set username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},userimg = #{userimg,jdbcType=VARCHAR},
       realname = #{realname,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
