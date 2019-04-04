@@ -5,7 +5,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.swj.customized.bean.Order;
 import com.swj.customized.mapper.OrderMapper;
-import com.swj.customized.tool.JSONTool;
 import com.swj.customized.tool.TimeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by xxb on 2018/10/22.
@@ -37,7 +37,8 @@ public class OrderManageController {
     @Transactional
     public JSONObject addOrder(@RequestBody Order order){
         JSONObject re = new JSONObject();
-        order.setId(null);
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        order.setId(uuid);
         order.setStatus(0);
         try {
             Order order1=new Order();
@@ -91,7 +92,7 @@ public class OrderManageController {
     @RequestMapping(value = "deleteOrder/{orderid}", method = RequestMethod.DELETE)
     @ApiOperation(value = "删除订单", notes = "根据订单id删除订单")
     @Transactional
-    public JSONObject deleteOrder(@PathVariable("orderid") int orderid) {
+    public JSONObject deleteOrder(@PathVariable("orderid") String orderid) {
         JSONObject re = new JSONObject();
         try {
             orderMapper.deleteByPrimaryKey(orderid);
@@ -107,9 +108,28 @@ public class OrderManageController {
 
     @RequestMapping(value = "getOrderById", method = RequestMethod.GET)
     @ApiOperation(value = "获取指定订单基本信息", notes = "根据订单ID获取指定订单基本信息")
-    public JSONObject getOrderById(@RequestParam int orderid) {
+    public JSONObject getOrderById(@RequestParam String orderid) {
         JSONObject re = new JSONObject();
         Order c = orderMapper.selectByPrimaryKey(orderid);
+        if (c == null) {
+            re.put("code", "0");
+            re.put("message", "订单获取失败或订单为空！");
+            re.put("result", new JSONObject());
+        } else {
+            re.put("code", "1");
+            re.put("message", "订单信息查询成功！");
+            re.put("result", c);
+        }
+        return re;
+    }
+
+    @RequestMapping(value = "getOrderByTaskId", method = RequestMethod.GET)
+    @ApiOperation(value = "获取指定任务订单基本信息", notes = "根据任务ID获取指定订单基本信息")
+    public JSONObject getOrderByProductId(@RequestParam String taskId) {
+        JSONObject re = new JSONObject();
+        Order select=new Order();
+        select.setTaskid(taskId);
+        List<Order> c = orderMapper.selectBySelective(select);
         if (c == null) {
             re.put("code", "0");
             re.put("message", "订单获取失败或订单为空！");

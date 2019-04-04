@@ -5,12 +5,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.swj.customized.bean.Message;
 import com.swj.customized.mapper.MessageMapper;
-import com.swj.customized.tool.JSONTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +37,7 @@ public class MessageController {
     public JSONObject addMessage(@RequestBody Message message){
         JSONObject re = new JSONObject();
         try {
+            message.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
             messageMapper.insertSelective(message);
             re.put("code", "1");
             re.put("message", "添加留言成功");
@@ -100,16 +101,17 @@ public class MessageController {
         return re;
     }
 
-    @ApiOperation(value = "获取所有留言", notes = "获取所有留言或分页获取所有留言")
-    @RequestMapping(value = "getAllMessage", method = RequestMethod.GET)
+    @ApiOperation(value = "获取指定产品下的所有留言", notes = "获取指定产品下的所有留言")
+    @RequestMapping(value = "getMessageByProductId", method = RequestMethod.GET)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "ispage", value = "是否使用分页", required = true, dataType = "boolean", paramType = "query"),
             @ApiImplicitParam(name = "pageNum", value = "查询页数", required = false, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "pageSize", value = "每页条数", required = false, dataType = "int", paramType = "query"),
     })
     public JSONObject getAllMessage(@RequestParam(name = "ispage") boolean ispage,
-                               @RequestParam(name = "pageNum", required = false) Integer pageNum,
-                               @RequestParam(name = "pageSize", required = false) Integer pageSize)
+                                   @RequestParam(name = "pageNum", required = false) Integer pageNum,
+                                   @RequestParam(name = "pageSize", required = false) Integer pageSize,
+                                    @RequestParam(name = "productId") String productId)
     {
         if (ispage) {
             PageHelper.startPage(pageNum, pageSize);
@@ -117,7 +119,9 @@ public class MessageController {
         JSONObject k = new JSONObject();
 
         try {
-            List<Message> cs = messageMapper.selectBySelective(null);
+            Message select=new Message();
+            select.setProductid(productId);
+            List<Message> cs = messageMapper.selectBySelective(select);
             k.put("code", 1);
             k.put("message", "查询成功");
             k.put("result", cs);

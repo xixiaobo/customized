@@ -30,10 +30,10 @@ public class Product {
     private String defaultImage;
 
     @ApiModelProperty(value="产品评分",name="productscore")
-    private double productscore;
+    private Double productscore;
 
     @ApiModelProperty(value="产品评分人数",name="productscore")
-    private int productscorenum;
+    private Integer productscorenum;
 
     @ApiModelProperty(value="产品创建时间",name="createtime")
     private String createtime;

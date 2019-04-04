@@ -1,172 +1,172 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.swj.customized.mapper.UsersMapper">
-  <resultMap id="BaseResultMap" type="com.swj.customized.bean.Users">
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="userimg" jdbcType="VARCHAR" property="userimg" />
-    <result column="realname" jdbcType="VARCHAR" property="realname" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="role" jdbcType="VARCHAR" property="role" />
-    <result column="createtime" jdbcType="VARCHAR" property="createtime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, username, password, userimg,realname, phone, email, role, createtime
-  </sql>
+    <!--auto generated Code-->
+    <resultMap id="BaseResultMap" type="com.swj.customized.bean.Users">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="userimg" property="userimg" jdbcType="VARCHAR"/>
+        <result column="realname" property="realname" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="role" property="role" jdbcType="VARCHAR"/>
+        <result column="createtime" property="createtime" jdbcType="VARCHAR"/>
+    </resultMap>
 
+    <!--auto generated Code-->
+    <sql id="Base_Column_List">
+        id,
+        username,
+        password,
+        userimg,
+        realname,
+        phone,
+        email,
+        role,
+        createtime
+    </sql>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from c_user
-    where id = #{id,jdbcType=VARCHAR}
-  </select>
+    <!--auto generated Code-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="users.id">
+        INSERT INTO c_users (
+            id,
+            username,
+            password,
+            userimg,
+            realname,
+            phone,
+            email,
+            role,
+            createtime
+        ) VALUES (
+            #{users.id,jdbcType=VARCHAR},
+            #{users.username,jdbcType=VARCHAR},
+            #{users.password,jdbcType=VARCHAR},
+            #{users.userimg,jdbcType=VARCHAR},
+            #{users.realname,jdbcType=VARCHAR},
+            #{users.phone,jdbcType=VARCHAR},
+            #{users.email,jdbcType=VARCHAR},
+            #{users.role,jdbcType=VARCHAR},
+            #{users.createtime,jdbcType=VARCHAR}
+        )
+    </insert>
 
+    <!--auto generated Code-->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="users.id">
+        INSERT INTO c_users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="users.id!=null"> id,</if>
+            <if test="users.username!=null"> username,</if>
+            <if test="users.password!=null"> password,</if>
+            <if test="users.userimg!=null"> userimg,</if>
+            <if test="users.realname!=null"> realname,</if>
+            <if test="users.phone!=null"> phone,</if>
+            <if test="users.email!=null"> email,</if>
+            <if test="users.role!=null"> role,</if>
+            <if test="users.createtime!=null"> createtime,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="users.id!=null">#{users.id,jdbcType=VARCHAR},
+            </if>
+            <if test="users.username!=null">#{users.username,jdbcType=VARCHAR},
+            </if>
+            <if test="users.password!=null">#{users.password,jdbcType=VARCHAR},
+            </if>
+            <if test="users.userimg!=null">#{users.userimg,jdbcType=VARCHAR},
+            </if>
+            <if test="users.realname!=null">#{users.realname,jdbcType=VARCHAR},
+            </if>
+            <if test="users.phone!=null">#{users.phone,jdbcType=VARCHAR},
+            </if>
+            <if test="users.email!=null">#{users.email,jdbcType=VARCHAR},
+            </if>
+            <if test="users.role!=null">#{users.role,jdbcType=VARCHAR},
+            </if>
+            <if test="users.createtime!=null">#{users.createtime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
 
-  <select id="selectUserBySelective" parameterType="com.swj.customized.bean.Users" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from c_user where 1=1
-    <if test="username != null">
-      and username = #{username,jdbcType=VARCHAR}
-    </if>
-    <if test="id != null">
-      and id = #{id,jdbcType=VARCHAR}
-    </if>
-    <if test="realname != null">
-      and realname = #{realname,jdbcType=VARCHAR}
-    </if>
-    <if test="phone != null">
-      and phone = #{phone,jdbcType=VARCHAR}
-    </if>
-    <if test="email != null">
-      and email = #{email,jdbcType=VARCHAR}
-    </if>
-    <if test="role != null">
-      and role = #{role,jdbcType=VARCHAR}
-    </if>
-    <if test="createtime != null">
-      and createtime = #{createtime,jdbcType=VARCHAR}
-    </if>
-  </select>
+    <!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO c_users (
+            id,
+            username,
+            password,
+            userimg,
+            realname,
+            phone,
+            email,
+            role,
+            createtime
+        )VALUES
+        <foreach collection="userss" item="users" index="index" separator=",">
+            (
+            #{users.id,jdbcType=VARCHAR},
+            #{users.username,jdbcType=VARCHAR},
+            #{users.password,jdbcType=VARCHAR},
+            #{users.userimg,jdbcType=VARCHAR},
+            #{users.realname,jdbcType=VARCHAR},
+            #{users.phone,jdbcType=VARCHAR},
+            #{users.email,jdbcType=VARCHAR},
+            #{users.role,jdbcType=VARCHAR},
+            #{users.createtime,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
 
-
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from c_user
+    <!--auto generated Code-->
+    <update id="updateByPrimaryKeySelective">
+        UPDATE c_users
+        <set>
+            <if test="users.username != null"> username= #{users.username,jdbcType=VARCHAR},</if>
+            <if test="users.password != null"> password= #{users.password,jdbcType=VARCHAR},</if>
+            <if test="users.userimg != null"> userimg= #{users.userimg,jdbcType=VARCHAR},</if>
+            <if test="users.realname != null"> realname= #{users.realname,jdbcType=VARCHAR},</if>
+            <if test="users.phone != null"> phone= #{users.phone,jdbcType=VARCHAR},</if>
+            <if test="users.email != null"> email= #{users.email,jdbcType=VARCHAR},</if>
+            <if test="users.role != null"> role= #{users.role,jdbcType=VARCHAR},</if>
+            <if test="users.createtime != null"> createtime= #{users.createtime,jdbcType=VARCHAR}</if>
+        </set>
+        WHERE id = #{users.id,jdbcType=VARCHAR}
+    </update>
+    <select id="selectUserBySelective" parameterType="com.swj.customized.bean.Users"  resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from c_users where 1=1
+        <if test="username != null">
+            and username = #{username,jdbcType=VARCHAR}
+        </if>
+        <if test="id != null">
+            and id = #{id,jdbcType=VARCHAR}
+        </if>
+        <if test="realname != null">
+            and realname = #{realname,jdbcType=VARCHAR}
+        </if>
+        <if test="phone != null">
+            and phone = #{phone,jdbcType=VARCHAR}
+        </if>
+        <if test="email != null">
+            and email = #{email,jdbcType=VARCHAR}
+        </if>
+        <if test="role != null">
+            and role = #{role,jdbcType=VARCHAR}
+        </if>
+        <if test="createtime != null">
+            and createtime = #{createtime,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from c_users
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-
-  <insert id="insert" parameterType="com.swj.customized.bean.Users">
-    insert into c_user (id, username, password, userimg,
-      realname, phone, email, 
-      role, createtime)
-    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{userimg,jdbcType=VARCHAR},
-      #{realname,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
-      #{role,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR})
-  </insert>
-
-  <insert id="insertSelective" parameterType="com.swj.customized.bean.Users">
-    insert into c_user
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="username != null">
-        username,
-      </if>
-      <if test="password != null">
-        password,
-      </if>
-      <if test="userimg != null">
-        userimg,
-      </if>
-      <if test="realname != null">
-        realname,
-      </if>
-      <if test="phone != null">
-        phone,
-      </if>
-      <if test="email != null">
-        email,
-      </if>
-      <if test="role != null">
-        role,
-      </if>
-      <if test="createtime != null">
-        createtime,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="userimg != null">
-        #{userimg,jdbcType=VARCHAR},
-      </if>
-      <if test="realname != null">
-        #{realname,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        #{role,jdbcType=VARCHAR},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.swj.customized.bean.Users">
-    update c_user
-    <set>
-      <if test="username != null">
-        username = #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="userimg != null">
-        userimg = #{userimg,jdbcType=VARCHAR},
-      </if>
-      <if test="realname != null">
-        realname = #{realname,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null">
-        phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        role = #{role,jdbcType=VARCHAR},
-      </if>
-      <if test="createtime != null">
-        createtime = #{createtime,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.swj.customized.bean.Users">
-    update c_user
-    set username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},userimg = #{userimg,jdbcType=VARCHAR},
-      realname = #{realname,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      role = #{role,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from c_users
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
 </mapper>
+

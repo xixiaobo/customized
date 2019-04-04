@@ -5,7 +5,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.swj.customized.bean.Image;
 import com.swj.customized.mapper.ImageMapper;
-import com.swj.customized.tool.JSONTool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -52,7 +51,7 @@ public class ImageController {
     }
 
     @RequestMapping(value = "addImages/{productid}", method = RequestMethod.POST)
-    @ApiOperation(value = "添加图片", notes = "添加新图片")
+    @ApiOperation(value = "批量添加图片", notes = "批量添加新图片")
     @Transactional
     public JSONObject addImage(@PathVariable("productid")String productid, @RequestBody List<Image> images){
         JSONObject re = new JSONObject();
@@ -62,7 +61,7 @@ public class ImageController {
                 image.setProductid(productid);
                 image.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
             }
-            imageMapper.insertListe(images);
+            imageMapper.insertList(newimages);
             re.put("code", "1");
             re.put("Image", "添加图片成功");
         }catch (Exception e){

@@ -10,21 +10,21 @@
           c.classname,
           u.username,
           p.content,
-          p.defaultImage,
+          p.default_image,
           p.productscore,
           p.productscorenum,
           p.createtime
       FROM
           c_product p
           LEFT JOIN c_classify c ON c.id = p.classid
-          LEFT JOIN c_user u ON u.id = p.userid
+          LEFT JOIN c_users u ON u.id = p.userid
   </sql>
   <select id="selectBySixNew" resultType="com.swj.customized.bean.Product">
     <include refid="Base_Column_List"/>
    order by p.createtime desc limit 0,6
   </select>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultType="com.swj.customized.bean.Product">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="com.swj.customized.bean.Product">
     <include refid="Base_Column_List" />
     where p.id = #{id,jdbcType=INTEGER}
   </select>
@@ -104,7 +104,7 @@ WHERE
         content,
       </if>
       <if test="defaultImage != null">
-        defaultImage,
+        default_image,
       </if>
       <if test="productscore != null">
         productscore,
@@ -162,7 +162,7 @@ WHERE
         content = #{content,jdbcType=VARCHAR},
       </if>
       <if test="defaultImage != null">
-        defaultImage = #{defaultImage,jdbcType=VARCHAR},
+        default_image = #{defaultImage,jdbcType=VARCHAR},
       </if>
       <if test="productscore != null">
         productscore = #{productscore,jdbcType=DOUBLE},
@@ -176,17 +176,4 @@ WHERE
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.swj.customized.bean.Product">
-    update c_product
-    set productname = #{productname,jdbcType=VARCHAR},
-      classid = #{classid,jdbcType=INTEGER},
-      userid = #{userid,jdbcType=VARCHAR},
-      content = #{content,jdbcType=VARCHAR},
-      defaultImage = #{defaultImage,jdbcType=VARCHAR},
-      productscore = #{productscore,jdbcType=DOUBLE},
-      productscorenum = #{productscorenum,jdbcType=INTEGER},
-      createtime = #{createtime,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
-
 </mapper>

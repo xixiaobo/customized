@@ -8,10 +8,10 @@ import lombok.Data;
 @ApiModel(value = "订单实体类",description = "订单实体类")
 public class Order {
     @ApiModelProperty(value="订单id",name="id")
-    private Integer id;
+    private String id;
 
     @ApiModelProperty(value="任务id",name="taskid")
-    private Integer taskid;
+    private String taskid;
 
     @ApiModelProperty(value="接单用户id",name="orderuserid")
     private String orderuserid;

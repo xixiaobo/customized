@@ -11,7 +11,7 @@ public class Message {
     private Integer id;
 
     @ApiModelProperty(value="产品id",name="productid")
-    private Integer productid;
+    private String productid;
 
     @ApiModelProperty(value="留言用户id",name="userid")
     private String userid;

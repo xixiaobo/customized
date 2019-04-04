@@ -17,6 +17,9 @@ public class Users {
     @ApiModelProperty(value="用户登录密码",name="password")
     private String password;
 
+    @ApiModelProperty(value="用户头像",name="userimg")
+    private String userimg;
+
     @ApiModelProperty(value="用户真实姓名",name="realname")
     private String realname;
 

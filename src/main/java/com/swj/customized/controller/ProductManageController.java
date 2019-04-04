@@ -4,11 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.swj.customized.bean.Image;
 import com.swj.customized.bean.Product;
-import com.swj.customized.mapper.ClassifyMapper;
-import com.swj.customized.mapper.ImageMapper;
-import com.swj.customized.mapper.MessageMapper;
 import com.swj.customized.mapper.ProductMapper;
 import com.swj.customized.tool.JSONTool;
 import io.swagger.annotations.Api;
@@ -66,7 +62,7 @@ public class ProductManageController {
                 re.put("code", "0");
                 re.put("message", "添加产品失败，产品已存在");
             } else {
-                product.setProductscore(0);
+                product.setProductscore(0.0);
                 product.setProductscorenum(0);
                 product.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
                 productMapper.insertSelective(product);

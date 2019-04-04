@@ -7,7 +7,6 @@ import com.swj.customized.bean.Order;
 import com.swj.customized.bean.Task;
 import com.swj.customized.mapper.OrderMapper;
 import com.swj.customized.mapper.TaskMapper;
-import com.swj.customized.tool.JSONTool;
 import com.swj.customized.tool.TimeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -78,23 +77,18 @@ public class TaskManageController {
     @RequestMapping(value = "deleteTask/{taskid}", method = RequestMethod.DELETE)
     @ApiOperation(value = "删除任务", notes = "根据任务id删除任务")
     @Transactional
-    public JSONObject deleteTask(@PathVariable("taskid") int taskid) {
+    public JSONObject deleteTask(@PathVariable("taskid") String taskid) {
         JSONObject re = new JSONObject();
         try {
             Order order1=new Order();
             order1.setTaskid(taskid);
             List<Order> orders=orderMapper.selectBySelective(order1);
             if (orders.size()>0){
-                for (Order o:orders){
-                    if (o.getStatus()!=3||o.getStatus()!=2){
-                        re.put("code", "0");
-                        re.put("message", "该任务下已经存在未完成订单");
-                        return re;
-                    }
-                }
+                re.put("code", "0");
+                re.put("message", "该任务下已经存在订单");
+                return re;
             }
             taskMapper.deleteByPrimaryKey(taskid);
-            orderMapper.deleteByTaskId(taskid);
             re.put("code", "1");
             re.put("message", "删除任务成功");
         }catch (Exception e){
@@ -107,7 +101,7 @@ public class TaskManageController {
 
     @RequestMapping(value = "getTaskById", method = RequestMethod.GET)
     @ApiOperation(value = "获取指定任务基本信息", notes = "根据任务ID获取指定任务基本信息")
-    public JSONObject getTaskById(@RequestParam int taskid) {
+    public JSONObject getTaskById(@RequestParam String taskid) {
         JSONObject re = new JSONObject();
         Task c = taskMapper.selectByPrimaryKey(taskid);
         if (c == null) {
