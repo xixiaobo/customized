@@ -92,7 +92,7 @@
         </set>
         WHERE id = #{message.id,jdbcType=INTEGER}
     </update>
-    <delete id="deleteByPrimaryKey"parameterType="java.lang.Integer">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from c_message
     where id = #{id,jdbcType=INTEGER}
   </delete>

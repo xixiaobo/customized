@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swj.customized.mapper.ImageMapper">
+    <!--auto generated Code-->
+    <resultMap id="BaseResultMap" type="com.swj.customized.bean.Image">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="productid" property="productid" jdbcType="VARCHAR"/>
+        <result column="createtime" property="createtime" jdbcType="VARCHAR"/>
+        <result column="imagebase64" property="imagebase64" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <!--auto generated Code-->
+    <sql id="Base_Column_List">
+        id,
+        productid,
+        createtime,
+        imagebase64
+    </sql>
+
+    <!--auto generated Code-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="image.id">
+        INSERT INTO c_image (
+            id,
+            productid,
+            createtime,
+            imagebase64
+        ) VALUES (
+            #{image.id,jdbcType=INTEGER},
+            #{image.productid,jdbcType=VARCHAR},
+            #{image.createtime,jdbcType=VARCHAR},
+            #{image.imagebase64,jdbcType=LONGVARCHAR}
+        )
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="image.id">
+        INSERT INTO c_image
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="image.id!=null"> id,</if>
+            <if test="image.productid!=null"> productid,</if>
+            <if test="image.createtime!=null"> createtime,</if>
+            <if test="image.imagebase64!=null"> imagebase64,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="image.id!=null">#{image.id,jdbcType=INTEGER},
+            </if>
+            <if test="image.productid!=null">#{image.productid,jdbcType=VARCHAR},
+            </if>
+            <if test="image.createtime!=null">#{image.createtime,jdbcType=VARCHAR},
+            </if>
+            <if test="image.imagebase64!=null">#{image.imagebase64,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO c_image (
+            productid,
+            createtime,
+            imagebase64
+        )VALUES
+        <foreach collection="images" item="image" index="index" separator=",">
+            (
+            #{image.productid,jdbcType=VARCHAR},
+            #{image.createtime,jdbcType=VARCHAR},
+            #{image.imagebase64,jdbcType=LONGVARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <!--auto generated Code-->
+    <update id="updateByPrimaryKeySelective">
+        UPDATE c_image
+        <set>
+            <if test="image.productid != null"> productid= #{image.productid,jdbcType=VARCHAR},</if>
+            <if test="image.createtime != null"> createtime= #{image.createtime,jdbcType=VARCHAR},</if>
+            <if test="image.imagebase64 != null"> imagebase64= #{image.imagebase64,jdbcType=LONGVARCHAR}</if>
+        </set>
+        WHERE id = #{image.id,jdbcType=INTEGER}
+    </update>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from c_image
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from c_image
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectBySelective"  parameterType="com.swj.customized.bean.Image" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from c_image
+        where 1=1
+        <if test="productid != null">
+            and productid = #{productid,jdbcType=VARCHAR}
+        </if>
+        <if test="createtime != null">
+            and createtime = #{createtime,jdbcType=VARCHAR}
+        </if>
+        <if test="imagebase64 != null">
+            and imagebase64 = #{imagebase64,jdbcType=LONGVARCHAR}
+        </if>
+    </select>
+    <delete id="deleteList">
+        delete from c_image
+        where id in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
+

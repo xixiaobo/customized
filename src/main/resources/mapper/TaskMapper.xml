@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swj.customized.mapper.TaskMapper">
+    <!--auto generated Code-->
+    <resultMap id="BaseResultMap" type="com.swj.customized.bean.Task">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="userid" property="userid" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="createtime" property="createtime" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <!--auto generated Code-->
+    <sql id="Base_Column_List">
+        id,
+        title,
+        userid,
+        status,
+        createtime,
+        content
+    </sql>
+
+    <!--auto generated Code-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="task.id">
+        INSERT INTO c_task (
+            id,
+            title,
+            userid,
+            status,
+            createtime,
+            content
+        ) VALUES (
+            #{task.id,jdbcType=VARCHAR},
+            #{task.title,jdbcType=VARCHAR},
+            #{task.userid,jdbcType=VARCHAR},
+            #{task.status,jdbcType=INTEGER},
+            #{task.createtime,jdbcType=VARCHAR},
+            #{task.content,jdbcType=LONGVARCHAR}
+        )
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="task.id">
+        INSERT INTO c_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="task.id!=null"> id,</if>
+            <if test="task.title!=null"> title,</if>
+            <if test="task.userid!=null"> userid,</if>
+            <if test="task.status!=null"> status,</if>
+            <if test="task.createtime!=null"> createtime,</if>
+            <if test="task.content!=null"> content,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="task.id!=null">#{task.id,jdbcType=VARCHAR},
+            </if>
+            <if test="task.title!=null">#{task.title,jdbcType=VARCHAR},
+            </if>
+            <if test="task.userid!=null">#{task.userid,jdbcType=VARCHAR},
+            </if>
+            <if test="task.status!=null">#{task.status,jdbcType=INTEGER},
+            </if>
+            <if test="task.createtime!=null">#{task.createtime,jdbcType=VARCHAR},
+            </if>
+            <if test="task.content!=null">#{task.content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO c_task (
+            id,
+            title,
+            userid,
+            status,
+            createtime,
+            content
+        )VALUES
+        <foreach collection="tasks" item="task" index="index" separator=",">
+            (
+            #{task.id,jdbcType=VARCHAR},
+            #{task.title,jdbcType=VARCHAR},
+            #{task.userid,jdbcType=VARCHAR},
+            #{task.status,jdbcType=INTEGER},
+            #{task.createtime,jdbcType=VARCHAR},
+            #{task.content,jdbcType=LONGVARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <!--auto generated Code-->
+    <update id="updateByPrimaryKeySelective">
+        UPDATE c_task
+        <set>
+            <if test="task.title != null"> title= #{task.title,jdbcType=VARCHAR},</if>
+            <if test="task.userid != null"> userid= #{task.userid,jdbcType=VARCHAR},</if>
+            <if test="task.status != null"> status= #{task.status,jdbcType=INTEGER},</if>
+            <if test="task.createtime != null"> createtime= #{task.createtime,jdbcType=VARCHAR},</if>
+            <if test="task.content != null"> content= #{task.content,jdbcType=LONGVARCHAR}</if>
+        </set>
+        WHERE id = #{task.id,jdbcType=VARCHAR}
+    </update>
+    <delete id="deleteByPrimaryKey"  parameterType="java.lang.String">
+    delete from c_task
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from c_task
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectBySelective" parameterType="com.swj.customized.bean.Task" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from c_task
+        where 1=1
+        <if test="title != null">
+            and title = #{title,jdbcType=VARCHAR}
+        </if>
+        <if test="userid != null">
+            and userid = #{userid,jdbcType=VARCHAR}
+        </if>
+        <if test="status != null">
+            and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="createtime != null">
+            and createtime = #{createtime,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null">
+            and content = #{content,jdbcType=LONGVARCHAR}
+        </if>
+        <if test="id != null">
+            and id = #{id,jdbcType=VARCHAR}
+        </if>
+    </select>
+</mapper>
+

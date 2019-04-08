@@ -1,19 +1,24 @@
 package com.swj.customized.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.swj.customized.bean.Image;
 import com.swj.customized.bean.Product;
+import com.swj.customized.dto.ProductDto;
+import com.swj.customized.mapper.ImageMapper;
+import com.swj.customized.mapper.MessageMapper;
 import com.swj.customized.mapper.ProductMapper;
-import com.swj.customized.tool.JSONTool;
+import com.swj.customized.tool.TimeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,43 +39,58 @@ public class ProductManageController {
 
     @Resource
     private ProductMapper productMapper;
-    @RequestMapping(value = "getProductID", method = RequestMethod.GET)
-    @ApiOperation(value = "获取产品ID", notes = "获取产品ID")
-    @Transactional
-    public JSONObject getProductID() {
-        JSONObject re = new JSONObject();
-        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        re.put("code", "1");
-        re.put("message", "获取产品ID成功");
-        re.put("result", uuid);
-        return re;
-    }
-
+    @Resource
+    private ImageMapper imageMapper;
+    @Resource
+    private MessageMapper messageMapper;
 
 
     @RequestMapping(value = "addProduct", method = RequestMethod.POST)
-    @ApiOperation(value = "添加产品", notes = "添加新产品")
+    @ApiOperation(value = "添加产品", notes = "添加新产品,product,images")
     @Transactional
-    public JSONObject addProduct(@RequestBody Product product) {
+    public JSONObject addProduct(@RequestBody JSONObject request) {
         JSONObject re = new JSONObject();
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        String newtime= TimeUtil.getNewDateString();
         try {
-            Product product1 = new Product();
+            Product product= JSON.toJavaObject(request.getJSONObject("product"),Product.class);
+            if(product==null){
+                re.put("code", "0");
+                re.put("message", "产品信息为空");
+                return re;
+            }
+            ProductDto product1 = new ProductDto();
             product1.setProductname(product.getProductname());
             product1.setClassid(product.getClassid());
-            List<Product> products = productMapper.selectBySelective(product1);
+            List<ProductDto> products = productMapper.selectBySelective(product1);
             if (products.size() > 0) {
                 re.put("code", "0");
                 re.put("message", "添加产品失败，产品已存在");
             } else {
+                product.setId(uuid);
+                product.setCreatetime(newtime);
                 product.setProductscore(0.0);
                 product.setProductscorenum(0);
-                product.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
                 productMapper.insertSelective(product);
+                JSONArray imagesJSON=request.getJSONArray("images");
+                List<Image> images=new ArrayList<>();
+                for (int i=0;i<imagesJSON.size();i++){
+                    String imageBase64=imagesJSON.getString(i);
+                    Image image=new Image();
+                    image.setProductid(uuid);
+                    image.setCreatetime(newtime);
+                    image.setImagebase64(imageBase64);
+                    images.add(image);
+                }
+                if (images.size()>0){
+                    imageMapper.insertList(images);
+                }
                 re.put("code", "1");
                 re.put("message", "添加产品成功");
-                re.put("result", JSONTool.ObjectToJSONObject(product));
             }
         } catch (Exception e) {
+            //异常出来回滚数据库操作
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             re.put("code", "0");
             re.put("message", "添加产品失败");
             re.put("Exception", e);
@@ -79,7 +99,7 @@ public class ProductManageController {
     }
 
     @RequestMapping(value = "JudgingWhetherUsersScoreOrNot", method = RequestMethod.GET)
-    @ApiOperation(value = "判断用户是否评分", notes = "判断用户是否评分")
+    @ApiOperation(value = "判断用户是否评分并获取评分", notes = "判断用户是否评分并获取评分")
     public JSONObject JudgingWhetherUsersScoreOrNot(@RequestParam("id") String id,@RequestParam("userid") String userid) {
         JSONObject re = new JSONObject();
         try {
@@ -87,7 +107,9 @@ public class ProductManageController {
             re.put("code", "1");
             re.put("message", "获取成功");
             if(num!=0){
+                double score=productMapper.getProductScoreByUserid(id,userid);
                 re.put("ishave",true);
+                re.put("score",score);
             }else {
                 re.put("ishave",false);
             }
@@ -102,10 +124,11 @@ public class ProductManageController {
 
     @RequestMapping(value = "updataProductscore", method = RequestMethod.GET)
     @ApiOperation(value = "修改产品评分", notes = "修改产品")
-    public JSONObject updataProductscore(@RequestParam("id") String id, @RequestParam("score") double score, @RequestParam("userid") String userid) {
+    @Transactional
+    public JSONObject updataProductscore(@RequestParam("productId") String productId, @RequestParam("score") double score, @RequestParam("userid") String userid) {
         JSONObject re = new JSONObject();
         try {
-            Product product = productMapper.selectByPrimaryKey(id);
+            ProductDto product = productMapper.selectByPrimaryKey(productId);
             double avescore = product.getProductscore();
             int scorenum = product.getProductscorenum();
             double sumscore = avescore * scorenum;
@@ -113,15 +136,16 @@ public class ProductManageController {
             sumscore = sumscore + score;
             double newavescore = sumscore / scorenum;
             Product product1 = new Product();
-            product1.setId(id);
+            product1.setId(productId);
             product1.setProductscorenum(scorenum);
             product1.setProductscore(newavescore);
-            productMapper.addProductscoreByUser(id, userid, score);
+            productMapper.addProductscoreByUser(productId, userid, score);
             productMapper.updateByPrimaryKeySelective(product1);
             re.put("code", "1");
             re.put("message", "产品评分成功");
         } catch (Exception e) {
-
+            //异常出来回滚数据库操作
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             re.put("code", "0");
             re.put("message", "产品评分失败");
             re.put("Exception", e);
@@ -142,12 +166,12 @@ public class ProductManageController {
             }
             product.setClassid(null);
             if (product.getProductname() != null) {
-                Product product1 = new Product();
+                ProductDto product1 = new ProductDto();
                 product1.setProductname(product.getProductname());
                 product1.setClassid(product.getClassid());
-                List<Product> products = productMapper.selectBySelective(product1);
+                List<ProductDto> products = productMapper.selectBySelective(product1);
                 if (products.size() > 0) {
-                    for (Product product2 : products) {
+                    for (ProductDto product2 : products) {
                         if (product2.getId() != product.getId()) {
                             re.put("code", "0");
                             re.put("message", "修改产品失败，产品已存在");
@@ -193,15 +217,22 @@ public class ProductManageController {
     @ApiOperation(value = "获取指定产品基本信息", notes = "根据产品ID获取指定产品基本信息")
     public JSONObject getProductById(@RequestParam String productid) {
         JSONObject re = new JSONObject();
-        Product c = productMapper.selectByPrimaryKey(productid);
-        if (c == null) {
-            re.put("code", "0");
-            re.put("message", "产品获取失败或产品为空！");
-            re.put("result", new JSONObject());
-        } else {
+        try {
+            ProductDto c = productMapper.selectByPrimaryKey(productid);
+            Image selectimage=new Image();
+            selectimage.setProductid(productid);
+            List<Image> images=imageMapper.selectBySelective(selectimage);
+            JSONObject result = new JSONObject();
+            result.put("product",c);
+            result.put("images",images);
             re.put("code", "1");
             re.put("message", "产品信息查询成功！");
-            re.put("result", c);
+            re.put("result", result);
+        } catch (Exception e) {
+            re.put("code", 0);
+            re.put("message", "产品信息查询失败");
+            re.put("result", new JSONObject());
+            re.put("Exception", e);
         }
         return re;
     }
@@ -211,7 +242,7 @@ public class ProductManageController {
     public JSONObject getNewProduct() {
         JSONObject k = new JSONObject();
         try {
-            List<Product> cs = productMapper.selectBySixNew();
+            List<ProductDto> cs = productMapper.selectBySixNew();
             k.put("code", 1);
             k.put("message", "获取最新产品成功");
             k.put("result", cs);
@@ -235,19 +266,19 @@ public class ProductManageController {
     public JSONObject getmeroProduct(@RequestParam(name = "ispage") boolean ispage,
                                      @RequestParam(name = "pageNum", required = false) Integer pageNum,
                                      @RequestParam(name = "pageSize", required = false) Integer pageSize,
-                                     @RequestBody Product product) {
+                                     @RequestBody ProductDto product) {
         if (ispage) {
             PageHelper.startPage(pageNum, pageSize);
         }
         JSONObject k = new JSONObject();
 
         try {
-            List<Product> cs = productMapper.selectBySelective(product);
+            List<ProductDto> cs = productMapper.selectBySelective(product);
             k.put("code", 1);
             k.put("message", "查询成功");
             k.put("result", cs);
             if (ispage) {
-                PageInfo<Product> pageInfo = new PageInfo<Product>(cs);
+                PageInfo<ProductDto> pageInfo = new PageInfo<ProductDto>(cs);
                 k.put("result", pageInfo);
             }
         } catch (Exception e) {

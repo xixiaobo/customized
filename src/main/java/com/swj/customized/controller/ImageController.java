@@ -1,10 +1,12 @@
 package com.swj.customized.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.swj.customized.bean.Image;
 import com.swj.customized.mapper.ImageMapper;
+import com.swj.customized.tool.TimeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -32,16 +34,37 @@ public class ImageController {
     @Resource
     private ImageMapper imageMapper;
 
-    @RequestMapping(value = "addImage", method = RequestMethod.POST)
-    @ApiOperation(value = "添加图片", notes = "添加新图片")
+    @RequestMapping(value = "updataImagesByProductid", method = RequestMethod.PUT)
+    @ApiOperation(value = "修改产品的图片", notes = "修改产品的图片")
     @Transactional
-    public JSONObject addImage(@RequestBody Image image){
+    public JSONObject updataImagesByProductid(@RequestBody JSONObject request){
         JSONObject re = new JSONObject();
         try {
-            image.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
-            imageMapper.insertSelective(image);
-            re.put("code", "1");
-            re.put("Image", "添加图片成功");
+            String productid=request.getString("productid");
+            if(productid==null){
+                re.put("code", "0");
+                re.put("Image", "产品id为空");
+            }else {
+                String creattime= TimeUtil.getNewDateString();
+                JSONArray deleteId=request.getJSONArray("deleteImagesId");
+                JSONArray addImages=request.getJSONArray("addImages");
+                List<Integer> ids=new ArrayList<>();
+                for (int i=0;i<deleteId.size();i++){
+                    ids.add(deleteId.getInteger(i));
+                }
+                imageMapper.deleteList(ids);
+                List<Image> newimages=new ArrayList<>();
+                for (int i=0;i<addImages.size();i++) {
+                    Image image=new Image();
+                    image.setImagebase64(addImages.getString(i));
+                    image.setProductid(productid);
+                    image.setCreatetime(creattime);
+                    newimages.add(image);
+                }
+                imageMapper.insertList(newimages);
+                re.put("code", "1");
+                re.put("Image", "产品图片修改成功");
+            }
         }catch (Exception e){
             re.put("code", "0");
             re.put("Image", "添加图片失败");
@@ -60,6 +83,7 @@ public class ImageController {
             for (Image image:images) {
                 image.setProductid(productid);
                 image.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
+                newimages.add(image);
             }
             imageMapper.insertList(newimages);
             re.put("code", "1");
@@ -124,31 +148,17 @@ public class ImageController {
         return re;
     }
 
-    @ApiOperation(value = "获取所有图片", notes = "获取所有图片或分页获取所有图片")
-    @RequestMapping(value = "getAllImage", method = RequestMethod.GET)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "ispage", value = "是否使用分页", required = true, dataType = "boolean", paramType = "query"),
-            @ApiImplicitParam(name = "pageNum", value = "查询页数", required = false, dataType = "int", paramType = "query"),
-            @ApiImplicitParam(name = "pageSize", value = "每页条数", required = false, dataType = "int", paramType = "query"),
-    })
-    public JSONObject getAllImage(@RequestParam(name = "ispage") boolean ispage,
-                               @RequestParam(name = "pageNum", required = false) Integer pageNum,
-                               @RequestParam(name = "pageSize", required = false) Integer pageSize)
+    @ApiOperation(value = "获取指定图片", notes = "根据条件获取指定图片")
+    @RequestMapping(value = "getAllImage", method = RequestMethod.POST)
+    public JSONObject getAllImage(@RequestBody Image image)
     {
-        if (ispage) {
-            PageHelper.startPage(pageNum, pageSize);
-        }
         JSONObject k = new JSONObject();
 
         try {
-            List<Image> cs = imageMapper.selectBySelective(null);
+            List<Image> cs = imageMapper.selectBySelective(image);
             k.put("code", 1);
             k.put("Image", "查询成功");
             k.put("result", cs);
-            if (ispage) {
-                PageInfo<Image> pageInfo = new PageInfo<Image>(cs);
-                k.put("result", pageInfo);
-            }
         }catch (Exception e){
             k.put("code", 0);
             k.put("Image", "查询失败");

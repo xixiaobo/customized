@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.swj.customized.mapper.ClassifyMapper">
+    <!--auto generated Code-->
+    <resultMap id="BaseResultMap" type="com.swj.customized.bean.Classify">
+        <result column="id" property="id" jdbcType="INTEGER"/>
+        <result column="classname" property="classname" jdbcType="VARCHAR"/>
+        <result column="classnum" property="classnum" jdbcType="INTEGER"/>
+        <result column="createtime" property="createtime" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--auto generated Code-->
+    <sql id="Base_Column_List">
+        id,
+        classname,
+        classnum,
+        createtime
+    </sql>
+
+    <!--auto generated Code-->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="classify.id">
+        INSERT INTO c_classify (
+            id,
+            classname,
+            classnum,
+            createtime
+        ) VALUES (
+            #{classify.id,jdbcType=INTEGER},
+            #{classify.classname,jdbcType=VARCHAR},
+            #{classify.classnum,jdbcType=INTEGER},
+            #{classify.createtime,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="classify.id">
+        INSERT INTO c_classify
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="classify.id!=null"> id,</if>
+            <if test="classify.classname!=null"> classname,</if>
+            <if test="classify.classnum!=null"> classnum,</if>
+            <if test="classify.createtime!=null"> createtime,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="classify.id!=null">#{classify.id,jdbcType=INTEGER},
+            </if>
+            <if test="classify.classname!=null">#{classify.classname,jdbcType=VARCHAR},
+            </if>
+            <if test="classify.classnum!=null">#{classify.classnum,jdbcType=INTEGER},
+            </if>
+            <if test="classify.createtime!=null">#{classify.createtime,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <!--auto generated Code-->
+    <insert id="insertList">
+        INSERT INTO c_classify (
+            id,
+            classname,
+            classnum,
+            createtime
+        )VALUES
+        <foreach collection="classifys" item="classify" index="index" separator=",">
+            (
+            #{classify.id,jdbcType=INTEGER},
+            #{classify.classname,jdbcType=VARCHAR},
+            #{classify.classnum,jdbcType=INTEGER},
+            #{classify.createtime,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <!--auto generated Code-->
+    <update id="updateByPrimaryKeySelective">
+        UPDATE c_classify
+        <set>
+            <if test="classify.classname != null"> classname= #{classify.classname,jdbcType=VARCHAR},</if>
+            <if test="classify.classnum != null"> classnum= #{classify.classnum,jdbcType=INTEGER},</if>
+            <if test="classify.createtime != null"> createtime= #{classify.createtime,jdbcType=VARCHAR}</if>
+        </set>
+        WHERE id = #{classify.id,jdbcType=INTEGER}
+    </update>
+    <select id="selectBySelective"  parameterType="com.swj.customized.bean.Classify" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from c_classify
+        where 1=1
+        <if test="classname != null">
+            and classname = #{classname,jdbcType=VARCHAR}
+        </if>
+        <if test="createtime != null">
+            and createtime = #{createtime,jdbcType=VARCHAR}
+        </if>
+        <if test="id != null">
+            and id = #{id,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from c_classify
+    where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from c_classify
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+</mapper>
+
