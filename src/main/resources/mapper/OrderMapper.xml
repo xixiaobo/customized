@@ -6,9 +6,11 @@
         <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="taskid" property="taskid" jdbcType="VARCHAR"/>
         <result column="orderuserid" property="orderuserid" jdbcType="VARCHAR"/>
-        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="receipt_explain" property="receipt_explain" jdbcType="LONGVARCHAR"/>
         <result column="createtime" property="createtime" jdbcType="VARCHAR"/>
         <result column="overtime" property="overtime" jdbcType="VARCHAR"/>
+        <result column="isdelete" property="isdelete" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--auto generated Code-->
@@ -17,8 +19,10 @@
         taskid,
         orderuserid,
         status,
+        receipt_explain,
         createtime,
-        overtime
+        overtime,
+        isdelete
     </sql>
 
     <!--auto generated Code-->
@@ -28,15 +32,19 @@
             taskid,
             orderuserid,
             status,
+            receipt_explain,
             createtime,
-            overtime
+            overtime,
+            isdelete
         ) VALUES (
             #{order.id,jdbcType=VARCHAR},
             #{order.taskid,jdbcType=VARCHAR},
             #{order.orderuserid,jdbcType=VARCHAR},
-            #{order.status,jdbcType=INTEGER},
+            #{order.status,jdbcType=VARCHAR},
+            #{order.receipt_explain,jdbcType=LONGVARCHAR},
             #{order.createtime,jdbcType=VARCHAR},
-            #{order.overtime,jdbcType=VARCHAR}
+            #{order.overtime,jdbcType=VARCHAR},
+            #{order.isdelete,jdbcType=VARCHAR}
         )
     </insert>
 
@@ -48,8 +56,10 @@
             <if test="order.taskid!=null"> taskid,</if>
             <if test="order.orderuserid!=null"> orderuserid,</if>
             <if test="order.status!=null"> status,</if>
+            <if test="order.receipt_explain!=null"> receipt_explain,</if>
             <if test="order.createtime!=null"> createtime,</if>
             <if test="order.overtime!=null"> overtime,</if>
+            <if test="order.isdelete!=null"> isdelete,</if>
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -59,11 +69,15 @@
             </if>
             <if test="order.orderuserid!=null">#{order.orderuserid,jdbcType=VARCHAR},
             </if>
-            <if test="order.status!=null">#{order.status,jdbcType=INTEGER},
+            <if test="order.status!=null">#{order.status,jdbcType=VARCHAR},
+            </if>
+            <if test="order.receipt_explain!=null">#{order.receipt_explain,jdbcType=LONGVARCHAR},
             </if>
             <if test="order.createtime!=null">#{order.createtime,jdbcType=VARCHAR},
             </if>
             <if test="order.overtime!=null">#{order.overtime,jdbcType=VARCHAR},
+            </if>
+            <if test="order.isdelete!=null">#{order.isdelete,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -75,17 +89,21 @@
             taskid,
             orderuserid,
             status,
+            receipt_explain,
             createtime,
-            overtime
+            overtime,
+            isdelete
         )VALUES
         <foreach collection="orders" item="order" index="index" separator=",">
             (
             #{order.id,jdbcType=VARCHAR},
             #{order.taskid,jdbcType=VARCHAR},
             #{order.orderuserid,jdbcType=VARCHAR},
-            #{order.status,jdbcType=INTEGER},
+            #{order.status,jdbcType=VARCHAR},
+            #{order.receipt_explain,jdbcType=LONGVARCHAR},
             #{order.createtime,jdbcType=VARCHAR},
-            #{order.overtime,jdbcType=VARCHAR}
+            #{order.overtime,jdbcType=VARCHAR},
+            #{order.isdelete,jdbcType=VARCHAR}
             )
         </foreach>
     </insert>
@@ -96,46 +114,82 @@
         <set>
             <if test="order.taskid != null"> taskid= #{order.taskid,jdbcType=VARCHAR},</if>
             <if test="order.orderuserid != null"> orderuserid= #{order.orderuserid,jdbcType=VARCHAR},</if>
-            <if test="order.status != null"> status= #{order.status,jdbcType=INTEGER},</if>
+            <if test="order.status != null"> status= #{order.status,jdbcType=VARCHAR},</if>
+            <if test="order.receipt_explain != null"> receipt_explain= #{order.receipt_explain,jdbcType=LONGVARCHAR},</if>
             <if test="order.createtime != null"> createtime= #{order.createtime,jdbcType=VARCHAR},</if>
-            <if test="order.overtime != null"> overtime= #{order.overtime,jdbcType=VARCHAR}</if>
+            <if test="order.overtime != null"> overtime= #{order.overtime,jdbcType=VARCHAR},</if>
+            <if test="order.isdelete != null"> isdelete= #{order.isdelete,jdbcType=VARCHAR}</if>
         </set>
         WHERE id = #{order.id,jdbcType=VARCHAR}
     </update>
-    <select id="selectBySelective" parameterType="com.swj.customized.bean.Order" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from c_order
-        where 1=1
-        <if test="taskid != null">
-            and taskid = #{taskid,jdbcType=VARCHAR}
-        </if>
-        <if test="orderuserid != null">
-            and orderuserid = #{orderuserid,jdbcType=VARCHAR}
-        </if>
-        <if test="status != null">
-            and status = #{status,jdbcType=INTEGER}
-        </if>
-        <if test="createtime != null">
-            and createtime = #{createtime,jdbcType=VARCHAR}
-        </if>
-        <if test="overtime != null">
-            and overtime = #{overtime,jdbcType=VARCHAR}
-        </if>
-        <if test="id != null">
-            and id = #{id,jdbcType=VARCHAR}
-        </if>
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from c_order
-    where id = #{id,jdbcType=VARCHAR}
-  </delete>
-    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from c_order
-        where id = #{id,jdbcType=VARCHAR}
-    </select>
 
+    <select id="selectBySelective" parameterType="com.swj.customized.bean.Order" resultType="com.swj.customized.dto.OrderDto">
+        select
+        o.id,
+        o.taskid,
+        o.orderuserid,
+        u.username,
+        u.userimg,
+        o.status,
+        o.createtime,
+        o.overtime,
+        o.receipt_explain,
+        o.isdelete
+        from c_order o
+        left join c_users u on u.id=o.orderuserid
+        where 1=1
+        <if test="order.taskid != null">
+            and o.taskid = #{order.taskid,jdbcType=VARCHAR}
+        </if>
+        <if test="order.orderuserid != null">
+            and o.orderuserid = #{order.orderuserid,jdbcType=VARCHAR}
+        </if>
+        <if test="order.status != null">
+            and o.status = #{order.status,jdbcType=INTEGER}
+        </if>
+        <if test="order.createtime != null">
+            and o.createtime = #{order.createtime,jdbcType=VARCHAR}
+        </if>
+        <if test="order.overtime != null">
+            and o.overtime = #{order.overtime,jdbcType=VARCHAR}
+        </if>
+        <if test="order.id != null">
+            and o.id = #{order.id,jdbcType=VARCHAR}
+        </if>
+        <if test="order.isdelete != null">
+            and o.isdelete = #{order.isdelete,jdbcType=INTEGER}
+        </if>
+        <if test="sortfield != null and sortfield != ''">
+            order by t.${sortfield}
+            <if test="sortingdirection != null and sortingdirection != ''">
+                ${sortingdirection}
+            </if>
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="com.swj.customized.dto.OrderDto">
+        select
+            o.id,
+            o.taskid,
+            o.orderuserid,
+            u.username,
+            u.userimg,
+            o.status,
+            o.createtime,
+            o.overtime,
+            o.receipt_explain,
+            o.isdelete
+        from c_order o
+        left join c_users u on u.id=o.orderuserid
+        where o.id = #{id,jdbcType=VARCHAR}
+    </select>
+    <update id="updateStatusByTaskid">
+        UPDATE c_order
+        set status= #{status,jdbcType=VARCHAR} , overtime= #{overtime,jdbcType=VARCHAR}
+        WHERE taskid= #{taskid,jdbcType=VARCHAR} and status='0'
+    </update>
+    <delete id="deleteByPrimaryKey"  parameterType="java.lang.String">
+delete from c_order
+    where id = #{id,jdbcType=VARCHAR}
+    </delete>
 </mapper>
 

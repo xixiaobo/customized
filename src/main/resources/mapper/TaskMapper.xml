@@ -6,9 +6,15 @@
         <result column="id" property="id" jdbcType="VARCHAR"/>
         <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="userid" property="userid" jdbcType="VARCHAR"/>
-        <result column="status" property="status" jdbcType="INTEGER"/>
-        <result column="createtime" property="createtime" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+        <result column="minsalary" property="minsalary" jdbcType="VARCHAR"/>
+        <result column="maxsalary" property="maxsalary" jdbcType="VARCHAR"/>
+        <result column="createtime" property="createtime" jdbcType="VARCHAR"/>
+        <result column="overtime" property="overtime" jdbcType="VARCHAR"/>
+        <result column="isdelete" property="isdelete" jdbcType="VARCHAR"/>
+        <result column="classid" property="classid" jdbcType="INTEGER"/>
+        <result column="taskdeadline" property="taskdeadline" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--auto generated Code-->
@@ -17,9 +23,15 @@
         title,
         userid,
         status,
+        content,
+        minsalary,
+        maxsalary,
         createtime,
-        content
-    </sql>
+        overtime,
+        isdelete,
+        classid,
+taskdeadline
+</sql>
 
     <!--auto generated Code-->
     <insert id="insert" useGeneratedKeys="true" keyProperty="task.id">
@@ -28,17 +40,29 @@
             title,
             userid,
             status,
+            content,
+            minsalary,
+            maxsalary,
             createtime,
-            content
+            overtime,
+            isdelete,
+            classid,
+            taskdeadline
         ) VALUES (
             #{task.id,jdbcType=VARCHAR},
             #{task.title,jdbcType=VARCHAR},
             #{task.userid,jdbcType=VARCHAR},
-            #{task.status,jdbcType=INTEGER},
+            #{task.status,jdbcType=VARCHAR},
+            #{task.content,jdbcType=LONGVARCHAR},
+            #{task.minsalary,jdbcType=VARCHAR},
+            #{task.maxsalary,jdbcType=VARCHAR},
             #{task.createtime,jdbcType=VARCHAR},
-            #{task.content,jdbcType=LONGVARCHAR}
+            #{task.overtime,jdbcType=VARCHAR},
+            #{task.isdelete,jdbcType=VARCHAR},
+            #{task.classid,jdbcType=INTEGER},
+            #{task.taskdeadline,jdbcType=VARCHAR}
         )
-    </insert>
+</insert>
 
     <!--auto generated Code-->
     <insert id="insertSelective" useGeneratedKeys="true" keyProperty="task.id">
@@ -48,93 +72,169 @@
             <if test="task.title!=null"> title,</if>
             <if test="task.userid!=null"> userid,</if>
             <if test="task.status!=null"> status,</if>
-            <if test="task.createtime!=null"> createtime,</if>
             <if test="task.content!=null"> content,</if>
+            <if test="task.minsalary!=null"> minsalary,</if>
+            <if test="task.maxsalary!=null"> maxsalary,</if>
+            <if test="task.createtime!=null"> createtime,</if>
+            <if test="task.overtime!=null"> overtime,</if>
+            <if test="task.isdelete!=null"> isdelete,</if>
+            <if test="task.classid!=null"> classid,</if>
+            <if test="task.taskdeadline!=null"> taskdeadline</if>
         </trim>
         VALUES
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="task.id!=null">#{task.id,jdbcType=VARCHAR},
-            </if>
-            <if test="task.title!=null">#{task.title,jdbcType=VARCHAR},
-            </if>
-            <if test="task.userid!=null">#{task.userid,jdbcType=VARCHAR},
-            </if>
-            <if test="task.status!=null">#{task.status,jdbcType=INTEGER},
-            </if>
-            <if test="task.createtime!=null">#{task.createtime,jdbcType=VARCHAR},
-            </if>
-            <if test="task.content!=null">#{task.content,jdbcType=LONGVARCHAR},
-            </if>
+            <if test="task.id!=null"> #{task.id,jdbcType=VARCHAR},</if>
+            <if test="task.title!=null"> #{task.title,jdbcType=VARCHAR},</if>
+            <if test="task.userid!=null"> #{task.userid,jdbcType=VARCHAR},</if>
+            <if test="task.status!=null"> #{task.status,jdbcType=VARCHAR},</if>
+            <if test="task.content!=null"> #{task.content,jdbcType=LONGVARCHAR},</if>
+            <if test="task.minsalary!=null"> #{task.minsalary,jdbcType=VARCHAR},</if>
+            <if test="task.maxsalary!=null"> #{task.maxsalary,jdbcType=VARCHAR},</if>
+            <if test="task.createtime!=null"> #{task.createtime,jdbcType=VARCHAR},</if>
+            <if test="task.overtime!=null"> #{task.overtime,jdbcType=VARCHAR},</if>
+            <if test="task.isdelete!=null"> #{task.isdelete,jdbcType=VARCHAR},</if>
+            <if test="task.classid!=null"> #{task.classid,jdbcType=INTEGER},</if>
+            <if test="task.taskdeadline!=null"> #{task.taskdeadline,jdbcType=VARCHAR}</if>
         </trim>
-    </insert>
+</insert>
 
     <!--auto generated Code-->
     <insert id="insertList">
-        INSERT INTO c_task (
+        INSERT INTO c_task(
             id,
             title,
             userid,
             status,
+            content,
+            minsalary,
+            maxsalary,
             createtime,
-            content
+            overtime,
+            isdelete,
+            classid,
+            taskdeadline
         )VALUES
         <foreach collection="tasks" item="task" index="index" separator=",">
-            (
+        (
             #{task.id,jdbcType=VARCHAR},
             #{task.title,jdbcType=VARCHAR},
             #{task.userid,jdbcType=VARCHAR},
-            #{task.status,jdbcType=INTEGER},
+            #{task.status,jdbcType=VARCHAR},
+            #{task.content,jdbcType=LONGVARCHAR},
+            #{task.minsalary,jdbcType=VARCHAR},
+            #{task.maxsalary,jdbcType=VARCHAR},
             #{task.createtime,jdbcType=VARCHAR},
-            #{task.content,jdbcType=LONGVARCHAR}
-            )
+            #{task.overtime,jdbcType=VARCHAR},
+            #{task.isdelete,jdbcType=VARCHAR},
+            #{task.classid,jdbcType=INTEGER},
+            #{task.taskdeadline,jdbcType=VARCHAR}
+        )
         </foreach>
-    </insert>
+</insert>
 
     <!--auto generated Code-->
     <update id="updateByPrimaryKeySelective">
         UPDATE c_task
         <set>
-            <if test="task.title != null"> title= #{task.title,jdbcType=VARCHAR},</if>
-            <if test="task.userid != null"> userid= #{task.userid,jdbcType=VARCHAR},</if>
-            <if test="task.status != null"> status= #{task.status,jdbcType=INTEGER},</if>
-            <if test="task.createtime != null"> createtime= #{task.createtime,jdbcType=VARCHAR},</if>
-            <if test="task.content != null"> content= #{task.content,jdbcType=LONGVARCHAR}</if>
+                <if test="task.id != null"> id = #{task.id,jdbcType=VARCHAR},</if>
+                <if test="task.title != null"> title = #{task.title,jdbcType=VARCHAR},</if>
+                <if test="task.userid != null"> userid = #{task.userid,jdbcType=VARCHAR},</if>
+                <if test="task.status != null"> status = #{task.status,jdbcType=VARCHAR},</if>
+                <if test="task.content != null"> content = #{task.content,jdbcType=LONGVARCHAR},</if>
+                <if test="task.minsalary != null"> minsalary = #{task.minsalary,jdbcType=VARCHAR},</if>
+                <if test="task.maxsalary != null"> maxsalary = #{task.maxsalary,jdbcType=VARCHAR},</if>
+                <if test="task.createtime != null"> createtime = #{task.createtime,jdbcType=VARCHAR},</if>
+                <if test="task.overtime != null"> overtime = #{task.overtime,jdbcType=VARCHAR},</if>
+                <if test="task.isdelete != null"> isdelete = #{task.isdelete,jdbcType=VARCHAR},</if>
+                <if test="task.classid != null"> classid = #{task.classid,jdbcType=INTEGER},</if>
+                <if test="task.taskdeadline != null"> taskdeadline = #{task.taskdeadline,jdbcType=VARCHAR}</if>
         </set>
-        WHERE id = #{task.id,jdbcType=VARCHAR}
+		WHERE id = #{task.id,jdbcType=VARCHAR}
     </update>
-    <delete id="deleteByPrimaryKey"  parameterType="java.lang.String">
-    delete from c_task
-    where id = #{id,jdbcType=VARCHAR}
-  </delete>
-    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultType="com.swj.customized.dto.TaskDto">
         select
-        <include refid="Base_Column_List" />
-        from c_task
-        where id = #{id,jdbcType=VARCHAR}
+        t.id,
+        t.title,
+        t.userid,
+        u.username,
+        u.userimg,
+        t.classid,
+        c.classname,
+        t.status,
+        t.taskdeadline,
+        t.createtime,
+        t.content,
+        t.minsalary,
+        t.maxsalary,
+        t.overtime,
+        t.isdelete,
+	COUNT(o.id) num
+    from c_task t
+    left join c_users u on u.id=t.userid
+    left join c_classify c on c.id=t.classid
+    LEFT JOIN c_order o ON o.taskid = t.id
+        where t.id = #{id,jdbcType=VARCHAR}
+            GROUP BY t.id
     </select>
-    <select id="selectBySelective" parameterType="com.swj.customized.bean.Task" resultMap="BaseResultMap">
+    <select id="selectBySelective"  resultType="com.swj.customized.dto.TaskDto">
         select
-        <include refid="Base_Column_List" />
-        from c_task
+        t.id,
+        t.title,
+        t.userid,
+        u.username,
+        u.userimg,
+        t.classid,
+        c.classname,
+        t.status,
+        t.createtime,
+        t.content,
+        t.minsalary,
+        t.maxsalary,
+        t.taskdeadline,
+        t.overtime,
+        t.isdelete,
+        COUNT(o.id) applicantsnum
+        from c_task t left join c_users u on u.id=t.userid
+        left join c_classify c on c.id=t.classid
+        LEFT JOIN c_order o ON o.taskid = t.id
         where 1=1
-        <if test="title != null">
-            and title = #{title,jdbcType=VARCHAR}
+        <if test="task.title != null">
+            and t.title = #{task.title,jdbcType=VARCHAR}
         </if>
-        <if test="userid != null">
-            and userid = #{userid,jdbcType=VARCHAR}
+        <if test="task.userid != null">
+            and t.userid = #{task.userid,jdbcType=VARCHAR}
         </if>
-        <if test="status != null">
-            and status = #{status,jdbcType=INTEGER}
+        <if test="task.status != null">
+            and t.status = #{task.status,jdbcType=VARCHAR}
         </if>
-        <if test="createtime != null">
-            and createtime = #{createtime,jdbcType=VARCHAR}
+        <if test="task.minsalary != null">
+            and t.minsalary = #{task.minsalary,jdbcType=VARCHAR}
         </if>
-        <if test="content != null">
-            and content = #{content,jdbcType=LONGVARCHAR}
+        <if test="task.maxsalary != null">
+            and t.maxsalary = #{task.maxsalary,jdbcType=VARCHAR}
         </if>
-        <if test="id != null">
-            and id = #{id,jdbcType=VARCHAR}
+        <if test="task.createtime != null">
+            and t.createtime = #{task.createtime,jdbcType=VARCHAR}
+        </if>
+        <if test="task.content != null">
+            and t.content = #{task.content,jdbcType=LONGVARCHAR}
+        </if>
+        <if test="task.id != null">
+            and t.id = #{task.id,jdbcType=VARCHAR}
+        </if>
+        <if test="task.isdelete != null">
+            and t.isdelete = #{task.isdelete,jdbcType=VARCHAR}
+        </if>
+        GROUP BY t.id
+        <if test="sortfield != null and sortfield != ''">
+            order by t.${sortfield}
+            <if test="sortingdirection != null and sortingdirection != ''">
+                ${sortingdirection}
+            </if>
         </if>
     </select>
+
 </mapper>
 

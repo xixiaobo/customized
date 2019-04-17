@@ -49,7 +49,7 @@ public interface ImageMapper {
      * @param ids
      * @return
      */
-    int deleteList(List<Integer> ids);
+    int deleteList(@Param("ids")List<Integer> ids);
 
     /**
      * 根据id查询图片

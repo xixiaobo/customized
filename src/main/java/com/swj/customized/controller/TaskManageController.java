@@ -3,8 +3,8 @@ package com.swj.customized.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.swj.customized.bean.Order;
 import com.swj.customized.bean.Task;
+import com.swj.customized.dto.TaskDto;
 import com.swj.customized.mapper.OrderMapper;
 import com.swj.customized.mapper.TaskMapper;
 import com.swj.customized.tool.TimeUtil;
@@ -14,17 +14,19 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by xxb on 2018/10/22.
  */
 @RestController
 @ResponseBody
-@Api(value = "任务接口", description = "任务接口")
+@Api(value = "任务接口" )
 @RequestMapping("TaskManage")
 @Slf4j
 public class TaskManageController {
@@ -33,16 +35,18 @@ public class TaskManageController {
     @Resource
     private TaskMapper taskMapper;
 
-
     @Resource
     private OrderMapper orderMapper;
+
 
     @RequestMapping(value = "addTask", method = RequestMethod.POST)
     @ApiOperation(value = "添加任务", notes = "添加新任务")
     @Transactional
     public JSONObject addTask(@RequestBody Task task){
         JSONObject re = new JSONObject();
-        task.setId(null);
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        task.setId(uuid);
+        task.setStatus("0");
         try {
             task.setCreatetime(TimeUtil.getNewDateString());
             taskMapper.insertSelective(task);
@@ -62,11 +66,19 @@ public class TaskManageController {
     public JSONObject updataTask(@RequestBody Task task) {
         JSONObject re = new JSONObject();
         try {
+            if(task.getStatus()!=null){
+                if (task.getStatus().equals("1")){
+                    task.setOvertime(TimeUtil.getNewDateString());
+                }else if (task.getStatus().equals("2")){
+                    task.setOvertime(TimeUtil.getNewDateString());
+                    orderMapper.updateStatusByTaskid(task.getId(),"-1",TimeUtil.getNewDateString());
+                }
+            }
             taskMapper.updateByPrimaryKeySelective(task);
             re.put("code", "1");
             re.put("message", "修改任务成功");
         }catch (Exception e){
-
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             re.put("code", "0");
             re.put("message", "修改任务失败");
             re.put("Exception",e);
@@ -80,15 +92,10 @@ public class TaskManageController {
     public JSONObject deleteTask(@PathVariable("taskid") String taskid) {
         JSONObject re = new JSONObject();
         try {
-            Order order1=new Order();
-            order1.setTaskid(taskid);
-            List<Order> orders=orderMapper.selectBySelective(order1);
-            if (orders.size()>0){
-                re.put("code", "0");
-                re.put("message", "该任务下已经存在订单");
-                return re;
-            }
-            taskMapper.deleteByPrimaryKey(taskid);
+            Task task=new Task();
+            task.setId(taskid);
+            task.setIsdelete("1");
+            taskMapper.updateByPrimaryKeySelective(task);
             re.put("code", "1");
             re.put("message", "删除任务成功");
         }catch (Exception e){
@@ -103,7 +110,7 @@ public class TaskManageController {
     @ApiOperation(value = "获取指定任务基本信息", notes = "根据任务ID获取指定任务基本信息")
     public JSONObject getTaskById(@RequestParam String taskid) {
         JSONObject re = new JSONObject();
-        Task c = taskMapper.selectByPrimaryKey(taskid);
+        TaskDto c = taskMapper.selectByPrimaryKey(taskid);
         if (c == null) {
             re.put("code", "0");
             re.put("message", "任务获取失败或任务为空！");
@@ -117,15 +124,20 @@ public class TaskManageController {
     }
 
     @ApiOperation(value = "获取所有任务", notes = "获取所有任务或分页获取所有任务")
-    @RequestMapping(value = "getAllTask", method = RequestMethod.GET)
+    @RequestMapping(value = "getAllTask", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "ispage", value = "是否使用分页", required = true, dataType = "boolean", paramType = "query"),
-            @ApiImplicitParam(name = "pageNum", value = "查询页数", required = false, dataType = "int", paramType = "query"),
-            @ApiImplicitParam(name = "pageSize", value = "每页条数", required = false, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageNum", value = "查询页数",  dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "pageSize", value = "每页条数", dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "sortfield", value = "排序字段名称", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "sortingdirection", value = "排序方式", dataType = "String", paramType = "query"),
     })
     public JSONObject getAllTask(@RequestParam(name = "ispage") boolean ispage,
                                @RequestParam(name = "pageNum", required = false) Integer pageNum,
-                               @RequestParam(name = "pageSize", required = false) Integer pageSize)
+                                 @RequestParam(name = "pageSize", required = false) Integer pageSize,
+                                 @RequestParam(name = "sortfield", required = false) String sortfield,
+                                 @RequestParam(name = "sortingdirection", required = false) String sortingdirection,
+                                 @RequestBody Task task)
     {
         if (ispage) {
             PageHelper.startPage(pageNum, pageSize);
@@ -133,12 +145,12 @@ public class TaskManageController {
         JSONObject k = new JSONObject();
 
         try {
-            List<Task> cs = taskMapper.selectBySelective(null);
+            List<TaskDto> cs = taskMapper.selectBySelective(task,sortfield,sortingdirection);
             k.put("code", 1);
             k.put("message", "查询成功");
             k.put("result", cs);
             if (ispage) {
-                PageInfo<Task> pageInfo = new PageInfo<Task>(cs);
+                PageInfo<TaskDto> pageInfo = new PageInfo<>(cs);
                 k.put("result", pageInfo);
             }
         }catch (Exception e){

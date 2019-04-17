@@ -1,5 +1,6 @@
 package com.swj.customized.mapper;
 
+import com.swj.customized.dto.TaskDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -37,18 +38,11 @@ public interface TaskMapper {
     int updateByPrimaryKeySelective(@Param("task") Task task);
 
     /**
-     * 根据id删除任务
-     * @param taskid
-     * @return
-     */
-    int deleteByPrimaryKey(String taskid);
-
-    /**
      * 根据id获取任务
      * @param taskid
      * @return
      */
-    Task selectByPrimaryKey(String taskid);
+    TaskDto selectByPrimaryKey(String taskid);
 
-    List<Task> selectBySelective(Task task);
+    List<TaskDto> selectBySelective(@Param("task") Task task,@Param("sortfield")String sortfield,@Param("sortingdirection")String sortingdirection);
 }

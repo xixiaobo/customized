@@ -52,7 +52,9 @@ public class ImageController {
                 for (int i=0;i<deleteId.size();i++){
                     ids.add(deleteId.getInteger(i));
                 }
-                imageMapper.deleteList(ids);
+                if(ids.size()!=0){
+                    imageMapper.deleteList(ids);
+                }
                 List<Image> newimages=new ArrayList<>();
                 for (int i=0;i<addImages.size();i++) {
                     Image image=new Image();
@@ -61,7 +63,9 @@ public class ImageController {
                     image.setCreatetime(creattime);
                     newimages.add(image);
                 }
-                imageMapper.insertList(newimages);
+                if (newimages.size()!=0){
+                    imageMapper.insertList(newimages);
+                }
                 re.put("code", "1");
                 re.put("Image", "产品图片修改成功");
             }

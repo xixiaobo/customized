@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.swj.customized.bean.Message;
+import com.swj.customized.dto.MessageDto;
 import com.swj.customized.mapper.MessageMapper;
+import com.swj.customized.tool.TimeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,7 +39,7 @@ public class MessageController {
     public JSONObject addMessage(@RequestBody Message message){
         JSONObject re = new JSONObject();
         try {
-            message.setCreatetime(DateTime.now().toString("yyyyMMddHHmmss"));
+            message.setCreatetime(TimeUtil.getNewDateString());
             messageMapper.insertSelective(message);
             re.put("code", "1");
             re.put("message", "添加留言成功");
@@ -121,12 +123,12 @@ public class MessageController {
         try {
             Message select=new Message();
             select.setProductid(productId);
-            List<Message> cs = messageMapper.selectBySelective(select);
+            List<MessageDto> cs = messageMapper.selectBySelective(select);
             k.put("code", 1);
             k.put("message", "查询成功");
             k.put("result", cs);
             if (ispage) {
-                PageInfo<Message> pageInfo = new PageInfo<Message>(cs);
+                PageInfo<MessageDto> pageInfo = new PageInfo<MessageDto>(cs);
                 k.put("result", pageInfo);
             }
         }catch (Exception e){

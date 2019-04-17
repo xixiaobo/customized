@@ -59,35 +59,26 @@ public class ProductManageController {
                 re.put("message", "产品信息为空");
                 return re;
             }
-            ProductDto product1 = new ProductDto();
-            product1.setProductname(product.getProductname());
-            product1.setClassid(product.getClassid());
-            List<ProductDto> products = productMapper.selectBySelective(product1);
-            if (products.size() > 0) {
-                re.put("code", "0");
-                re.put("message", "添加产品失败，产品已存在");
-            } else {
-                product.setId(uuid);
-                product.setCreatetime(newtime);
-                product.setProductscore(0.0);
-                product.setProductscorenum(0);
-                productMapper.insertSelective(product);
-                JSONArray imagesJSON=request.getJSONArray("images");
-                List<Image> images=new ArrayList<>();
-                for (int i=0;i<imagesJSON.size();i++){
-                    String imageBase64=imagesJSON.getString(i);
-                    Image image=new Image();
-                    image.setProductid(uuid);
-                    image.setCreatetime(newtime);
-                    image.setImagebase64(imageBase64);
-                    images.add(image);
-                }
-                if (images.size()>0){
-                    imageMapper.insertList(images);
-                }
-                re.put("code", "1");
-                re.put("message", "添加产品成功");
+            product.setId(uuid);
+            product.setCreatetime(newtime);
+            product.setProductscore(0.0);
+            product.setProductscorenum(0);
+            productMapper.insertSelective(product);
+            JSONArray imagesJSON=request.getJSONArray("images");
+            List<Image> images=new ArrayList<>();
+            for (int i=0;i<imagesJSON.size();i++){
+                String imageBase64=imagesJSON.getString(i);
+                Image image=new Image();
+                image.setProductid(uuid);
+                image.setCreatetime(newtime);
+                image.setImagebase64(imageBase64);
+                images.add(image);
             }
+            if (images.size()>0){
+                imageMapper.insertList(images);
+            }
+            re.put("code", "1");
+            re.put("message", "添加产品成功");
         } catch (Exception e) {
             //异常出来回滚数据库操作
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -128,18 +119,18 @@ public class ProductManageController {
     public JSONObject updataProductscore(@RequestParam("productId") String productId, @RequestParam("score") double score, @RequestParam("userid") String userid) {
         JSONObject re = new JSONObject();
         try {
-            ProductDto product = productMapper.selectByPrimaryKey(productId);
-            double avescore = product.getProductscore();
-            int scorenum = product.getProductscorenum();
-            double sumscore = avescore * scorenum;
-            scorenum += 1;
-            sumscore = sumscore + score;
-            double newavescore = sumscore / scorenum;
+            productMapper.addProductscoreByUser(productId, userid, score);
+            List<Double> scores=productMapper.getProductScoreByProductid(productId);
+            int scorenum = scores.size();
+            double sum=0.0;
+            for (double i:scores){
+                sum+=i;
+            }
+            double avescore=sum/scorenum;
             Product product1 = new Product();
             product1.setId(productId);
             product1.setProductscorenum(scorenum);
-            product1.setProductscore(newavescore);
-            productMapper.addProductscoreByUser(productId, userid, score);
+            product1.setProductscore(avescore);
             productMapper.updateByPrimaryKeySelective(product1);
             re.put("code", "1");
             re.put("message", "产品评分成功");

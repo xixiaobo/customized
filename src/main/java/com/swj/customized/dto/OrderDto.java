@@ -1,4 +1,4 @@
-package com.swj.customized.bean;
+package com.swj.customized.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @ApiModel(value = "订单实体类",description = "订单实体类")
-public class Order {
+public class OrderDto {
     @ApiModelProperty(value="订单id",name="id")
     private String id;
 
@@ -15,7 +15,10 @@ public class Order {
 
     @ApiModelProperty(value="接单用户id",name="orderuserid")
     private String orderuserid;
-
+    @ApiModelProperty(value="接单用户名称",name="username")
+    private String username;
+    @ApiModelProperty(value="接单用户头像",name="userimg")
+    private String userimg;
     @ApiModelProperty(value="订单状态（0：待确认；1：确认；-2：拒绝；-1：失效）",name="status")
     private String status;
 

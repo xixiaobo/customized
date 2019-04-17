@@ -102,23 +102,31 @@
         from c_message
         where id = #{id,jdbcType=INTEGER}
     </select>
-    <select id="selectBySelective" parameterType="com.swj.customized.bean.Message" resultMap="BaseResultMap">
+    <select id="selectBySelective" parameterType="com.swj.customized.bean.Message" resultType="com.swj.customized.dto.MessageDto">
         select
-        <include refid="Base_Column_List" />
-        from c_message
+        m.id,
+        m.productid,
+        m.userid,
+        m.content,
+        m.createtime,
+        u.userimg,
+        u.username
+        from c_message m left join c_users u on m.userid=u.id
         where 1=1
         <if test="productid != null">
-            and productid = #{productid,jdbcType=VARCHAR}
+            and m.productid = #{productid,jdbcType=VARCHAR}
         </if>
         <if test="userid != null">
-            and userid = #{userid,jdbcType=VARCHAR}
+            and m.userid = #{userid,jdbcType=VARCHAR}
         </if>
         <if test="content != null">
-            and content = #{content,jdbcType=VARCHAR}
+            and m.content = #{content,jdbcType=VARCHAR}
         </if>
         <if test="createtime != null">
-            and createtime = #{createtime,jdbcType=VARCHAR}
+            and m.createtime = #{createtime,jdbcType=VARCHAR}
         </if>
+        order by m.createtime desc
+
     </select>
 </mapper>
 

@@ -1,5 +1,6 @@
 package com.swj.customized.mapper;
 
+import com.swj.customized.dto.MessageDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -55,5 +56,5 @@ public interface MessageMapper {
      * @param select
      * @return
      */
-    List<Message> selectBySelective(Message select);
+    List<MessageDto> selectBySelective(Message select);
 }

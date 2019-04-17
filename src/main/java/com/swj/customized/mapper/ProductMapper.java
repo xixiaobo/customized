@@ -78,6 +78,14 @@ public interface ProductMapper {
     double getProductScoreByUserid(@Param("product_id") String product_id, @Param("user_id") String user_id);
 
     /**
+     * 获取此产品的评分
+     * @param product_id
+     * @return
+     */
+    @Select("SELECT score num from c_product_score where product_id=#{product_id}")
+    List<Double> getProductScoreByProductid(@Param("product_id") String product_id);
+
+    /**
      * 根据产品id获取产品
      * @param productId
      * @return

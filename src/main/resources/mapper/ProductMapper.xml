@@ -198,7 +198,7 @@ productscorenum
         LEFT JOIN c_message m ON m.productid = p.id
         LEFT JOIN c_product_score s ON s.product_id = p.id
         WHERE
-        p.id on
+        p.id in
         <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
