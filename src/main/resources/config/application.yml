@@ -6,8 +6,8 @@ spring:
     name: customized
   datasource:
     url: jdbc:mysql://39.106.141.224:3306/customized?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
-    username: root
-    password: root123
+    username: customized
+    password: Customized123!@#
     driver-class-name: com.mysql.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:

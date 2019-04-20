@@ -44,16 +44,21 @@ public class JSONController {
                 stringBuilder.append(d);
             }
             try {
-                result.put("data", JSON.parseObject(stringBuilder.toString()));
+                result.put("code", "1");
+                result.put("message", "数据获取成功");
+                result.put("result", JSON.parseObject(stringBuilder.toString()));
             }catch (Exception e){
-                result.put("data", new JSONObject());
+                result.put("code", "0");
+                result.put("message", "数据获取失败");
+                result.put("errormessage", e);
+                result.put("result", new JSONObject());
             }
         }else {
+            result.put("code", "0");
+            result.put("message", "web初始化数据获取为空");
             result.put("data", new JSONObject());
         }
 
-        result.put("code", "1");
-        result.put("message", "数据获取成功");
         return result;
     }
 
